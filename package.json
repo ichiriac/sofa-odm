@@ -4,10 +4,10 @@
   "description": "NodeJS ODM for Couchbase",
   "main": "main.js",
   "directories": {
-    "test": "tests"
+    "test": "test"
   },
   "scripts": {
-    "test": "bin/test.js"
+    "test": "node ./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,10 @@
   "dependencies": {
     "q": "^1.0.1",
     "couchbase": "^1.2.4",
-    "extend": "^1.3.0"
+    "extend": "^1.3.0",
+    "node-uuid": "^1.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^1.21.4"
   }
 }
