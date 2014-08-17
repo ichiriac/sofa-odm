@@ -43,7 +43,7 @@ module.exports = function(manager, mapper) {
   /**
    * Go to the specified page
    */
-  resultset.prototype.go: function(page) {
+  resultset.prototype.go = function(page) {
     this.criteria.skip = this.limit * (page - 1);
     if ( this.criteria.skip > -1 && this.criteria.skip < this.length) {
       return mapper.find(
