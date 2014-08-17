@@ -30,7 +30,6 @@ module.exports = function(name, options) {
       handler.validate.contents = function(value) {
         if (!options.validate.test(value)) {
           throw new Error('Bad format for "' + name + '"');
-          break;
         }
         return true;
       };
