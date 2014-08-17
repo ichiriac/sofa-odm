@@ -62,14 +62,19 @@ module.exports = function(manager, mapper) {
   // removes the current entry
   record.prototype.remove = function() {
     var result = q.defer();
+    var self = this;
     if (this._id) {
+      if (!mapper.options.record.beforeRemove.apply(self, [])) {
+        throw new Error('Unable to remove the record');
+      }
       manager.cb.remove(
         mapper.options.autoincrement ? mapper.options.type + '.' + this._id : this._id
         , function(err) {
         if (err) {
           result.reject(err);
         } else {
-          result.resolve();
+          mapper.options.record.afterRemove.apply(self, []);
+          result.resolve(self);
         }
       });
     } else {
