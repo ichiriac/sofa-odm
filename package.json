@@ -1,0 +1,31 @@
+{
+  "name": "sofa-odm",
+  "version": "0.0.1",
+  "description": "NodeJS ODM for Couchbase",
+  "main": "main.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "bin/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ichiriac/sofa-odm.git"
+  },
+  "keywords": [
+    "couchbase",
+    "odm",
+    "crud"
+  ],
+  "author": "Ioan CHIRIAC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ichiriac/sofa-odm/issues"
+  },
+  "homepage": "https://github.com/ichiriac/sofa-odm",
+  "dependencies": {
+    "q": "^1.0.1",
+    "couchbase": "^1.2.4"
+  }
+}
