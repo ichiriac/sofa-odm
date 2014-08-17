@@ -6,7 +6,7 @@ var mapper = require('./src/mapper');
  */
 module.exports = function(config) {
   var result = q.defer();
-  new cb.Connection(config || {}, function(err) {
+  var couchbase = new cb.Connection(config || {}, function(err) {
     if (err) {
       result.reject(err);
     } else {
@@ -14,7 +14,7 @@ module.exports = function(config) {
        * The couchbase orm
        */
       result.resolve({
-        cb: this,
+        cb: couchbase,
         mappers: {},
         /**
          * Declare a new mapper
