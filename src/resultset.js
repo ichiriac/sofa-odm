@@ -11,10 +11,16 @@ module.exports = function(manager, mapper) {
     this.limit = criteria.limit,
     this.rows = [];
     for(var i = 0; i < data.length; i++) {
-      this.rows.push(
-        mapper.create(data[i].doc.json)
-      );
+      if (data[i].doc && data[i].doc.json) {
+        this.rows.push(
+          mapper.create(data[i].doc.json)
+        );
+      }
     }
+  };
+  // check if has another page of data
+  resultset.prototype.hasNext = function() {
+    return this.skip + this.rows.length < this.length - 1;
   };
   // go to the next page
   resultset.prototype.next = function() {
@@ -41,10 +47,10 @@ module.exports = function(manager, mapper) {
     }
   };
   /**
-   * Go to the specified page
+   * Go to the specified offset
    */
-  resultset.prototype.go = function(page) {
-    this.criteria.skip = this.limit * (page - 1);
+  resultset.prototype.go = function(offset) {
+    this.criteria.skip = offset;
     if ( this.criteria.skip > -1 && this.criteria.skip < this.length) {
       return mapper.find(
         this.view, this.criteria

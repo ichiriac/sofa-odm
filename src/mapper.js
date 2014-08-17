@@ -27,11 +27,11 @@ module.exports = function(manager, namespace, options) {
       var result = q.defer();
       if (criteria instanceof Array) {
         criteria = {
-          body: { keys: criteria }
+          keys: criteria
         };
       } else if (!(criteria instanceof Object)) {
         criteria = {
-          body: { key: criteria }
+          key: criteria
         };
       }
       criteria = extend(true, {
@@ -39,7 +39,7 @@ module.exports = function(manager, namespace, options) {
         include_docs: true,
         skip: 0
       }, criteria);
-      manager.cb.view(namespace, view).query(criteria, function(err, data, misc) {
+      manager.cb.view(namespace, view, criteria).query(function(err, data, misc) {
         if (err) {
           result.reject(err);
         } else {

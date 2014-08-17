@@ -40,7 +40,7 @@ module.exports = function(manager, mapper) {
         // reserved field _type
         self._type = mapper.options.type;
         manager.cb.set(
-          mapper.options.autoincrement ? self._type + '.' + self._id : self._id, self,
+          mapper.options.autoincrement ? mapper.options.type + '.' + self._id : self._id, self,
           function(err, data) {
             if (err) {
               result.reject(err);
@@ -61,7 +61,21 @@ module.exports = function(manager, mapper) {
   
   // removes the current entry
   record.prototype.remove = function() {
-    
+    var result = q.defer();
+    if (this._id) {
+      manager.cb.remove(
+        mapper.options.autoincrement ? mapper.options.type + '.' + this._id : this._id
+        , function(err) {
+        if (err) {
+          result.reject(err);
+        } else {
+          result.resolve();
+        }
+      });
+    } else {
+      result.reject(new Error("Can not remove, the entry is not saved yet"));
+    }
+    return result.promise;
   };
 
   // manager
