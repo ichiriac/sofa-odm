@@ -5,7 +5,6 @@ var q = require('q');
  */
 module.exports = function(manager, namespace, options) {
   var mapper = {
-    namespace: namespace,   
     options: extend(true,
       // default options
       {
@@ -16,7 +15,7 @@ module.exports = function(manager, namespace, options) {
           beforeSave: function() { return true; }
           ,afterSave: function() { return true; }
           ,beforeRemove: function() { return true; }
-          ,afterSave: function() { return true; }
+          ,afterRemove: function() { return true; }
         }
       }
       , options
@@ -56,6 +55,37 @@ module.exports = function(manager, namespace, options) {
      */
     create: function(doc) {
       return record.deserialize(doc);
+    },
+    /**
+     * Automatically creates 
+     */
+    setup: function() {
+      var result = q.defer();
+      var docs = { views: {} };
+      var found = false;
+      for(var fieldName in mapper.options.fields) {
+        var field = mapper.options.fields[fieldName];
+        if (field.meta.unique || field.meta.index) {
+          found = true;
+          docs.views[fieldName] = {
+            map:  'function(doc,meta) {\n'
+                + '\tif (doc._type && doc._type == ' + JSON.stringify(mapper.options.type) + ') {\n'
+                + '\t\temit(doc.' + fieldName + ', null);\n'
+                + '\t}\n'
+                + '}'
+          };
+        }
+      }
+      if (found) {
+        manager.cb.setDesignDoc(mapper.options.type, docs, function(err) {
+          if (err) {
+            result.reject(err);
+          } else {
+            result.resolve(docs);
+          }
+        });
+      } else result.resolve(false);
+      return result.promise;
     }
   };
   for(var fieldName in mapper.options.fields) {
