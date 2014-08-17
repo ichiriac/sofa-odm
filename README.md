@@ -12,8 +12,6 @@ indexed columns and some basic requesting.
 npm install sofa-odm --save
 ```
 
-The main 
-
 ## Functionnalities :
 
 * Document type oriented (like tables on relational databases)
@@ -21,6 +19,7 @@ The main
 * Filtering and paginations
 * Validating data before its saved
 * Automatically creates views for filtering
+* Using Promises api
 
 A lot more can be done to improve this library, but essentials tools are here
 
@@ -28,19 +27,21 @@ A lot more can be done to improve this library, but essentials tools are here
 
 Bootstrap :
 
-```
+```js
 require('sofa-odm')({
+  // connection parameters
   host: 'localhost:8091',
   bucket: 'default',
   connectionTimeout: 50000
 }).then(function(couchbase) {
+  // registering models
   require('./models/user')(couchbase);
 }).done();
 ```
 
 A mapper structure :
 
-```
+```js
 module.exports = function(couchbase) {
   return couchbase.declare('user', {
     // declare fields
@@ -65,7 +66,7 @@ module.exports = function(couchbase) {
 
 A mapper usage :
 
-```
+```js
 // create an active record
 var john = couchbase.get('user').create({
   name: 'John Doe',
@@ -90,15 +91,15 @@ john.save()
 
 ### Manager
 
-**declare** (namespace, options) : Declares a new mapper
-**get** (namespace) : Gets the mapper
+* **declare** (namespace, options) : Declares a new mapper
+* **get** (namespace) : Gets the mapper
 
 ### Mapper 
 
-**create** (properties) : Creates a new active record
-**find** (viewname, filter) : Filters the specified view
+* **create** (properties) : Creates a new active record
+* **find** (viewname, filter) : Filters the specified view
 
 ### Active Record
 
-**save** : Saves the current record
-**remove** : Removes the current record
+* **save** : Saves the current record
+* **remove** : Removes the current record
