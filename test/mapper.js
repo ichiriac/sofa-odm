@@ -1,4 +1,5 @@
 var assert = require('assert');
+
 describe('test mapper api', function() {
   var couchbase;
   it('should declare', function(done) {

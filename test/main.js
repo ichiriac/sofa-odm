@@ -1,4 +1,5 @@
 var assert = require('assert');
+
 describe('test main api', function() {
   var couchbase;
   it('should connect to couchbase', function(done) {
