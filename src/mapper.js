@@ -5,8 +5,22 @@ var q = require('q');
  */
 module.exports = function(manager, namespace, options) {
   var mapper = {
-    namespace: namespace,
-    options: options,
+    namespace: namespace,   
+    options: extend(true,
+      // default options
+      {
+        type:           namespace,
+        autoincrement:  true,
+        fields:         {},
+        record:         {
+          beforeSave: function() { return true; }
+          ,afterSave: function() { return true; }
+          ,beforeRemove: function() { return true; }
+          ,afterSave: function() { return true; }
+        }
+      }
+      , options
+    ),
     /**
      * Finds data from the specified resultset
      */
@@ -31,7 +45,7 @@ module.exports = function(manager, namespace, options) {
           result.reject(err);
         } else {
           result.resolve(
-            resultset.deserialize(view, criteria, data, misc);
+            resultset.deserialize(view, criteria, data, misc)
           );
         }
       });
@@ -44,6 +58,12 @@ module.exports = function(manager, namespace, options) {
       return record.deserialize(doc);
     }
   };
+  for(var fieldName in mapper.options.fields) {
+    mapper.options.fields[fieldName] = require('./field')(
+      fieldName,
+      mapper.options.fields[fieldName]
+    );
+  }
   // record manager
   var record = require('./record')(manager, mapper);
   // resultset manager
