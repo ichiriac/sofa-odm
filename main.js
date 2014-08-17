@@ -6,7 +6,7 @@ var mapper = require('./src/mapper');
  */
 module.exports = function(config) {
   var result = q.defer();
-  new cb.Connection(config, function(err) {
+  new cb.Connection(config || {}, function(err) {
     if (err) {
       result.reject(err);
     } else {
