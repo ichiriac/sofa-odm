@@ -104,6 +104,7 @@ describe('test resultset api', function() {
       return results.go(results.length - results.limit);
     }).then(function(results) {
       assert(!results.hasNext(), 'Should NOT have next');
+      done();
     }).done();
   });
   // test prev
@@ -112,9 +113,9 @@ describe('test resultset api', function() {
       assert(results.hasNext(), 'Should have next');
       return results.next();
     }).then(function(results) {
-      return results.prev();
+      return results.previous();
     }).then(function(results) {
-      assert(results.skip === 0, 'Should be at start');
+      assert(results.offset === 0, 'Should be at start');
       done();
     }).done();
   });

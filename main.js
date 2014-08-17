@@ -1,6 +1,9 @@
 var cb = require('couchbase');
 var q = require('q');
 var mapper = require('./src/mapper');
+if (process.env.NODE_ENV == 'test') {
+  cb = cb.Mock;
+}
 /**
  * Initialize the couchbase connection
  */

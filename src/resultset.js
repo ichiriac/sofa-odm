@@ -8,7 +8,8 @@ module.exports = function(manager, mapper) {
     this.criteria = criteria;
     this.length = misc.total_rows;
     this.offset = criteria.skip;
-    this.limit = criteria.limit,
+    this.limit = criteria.limit;
+    this.view = view;
     this.rows = [];
     for(var i = 0; i < data.length; i++) {
       if (data[i].doc && data[i].doc.json) {
@@ -20,7 +21,7 @@ module.exports = function(manager, mapper) {
   };
   // check if has another page of data
   resultset.prototype.hasNext = function() {
-    return this.skip + this.rows.length < this.length - 1;
+    return this.offset + this.limit < this.length - 1;
   };
   // go to the next page
   resultset.prototype.next = function() {
