@@ -6,6 +6,7 @@ describe('test main api', function() {
     }).then(function(api) {
       assert(typeof api.declare === 'function', 'should have declare function');
       assert(typeof api.get === 'function', 'should have get function');
+      assert(typeof api.has === 'function', 'should have has function');
       assert(typeof api.cb === 'object', 'should have cb object');
       done();
     }).done();

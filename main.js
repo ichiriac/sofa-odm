@@ -36,6 +36,12 @@ module.exports = function(config) {
             throw new Error('Namespace [' + namespace + '] is undefined !');
           }
           return this.mappers[namespace];
+        },
+        /**
+         * Checks if the mapper is defined
+         */
+        has: function(namespace) {
+          return this.mappers.hasOwnProperty(namespace);
         }
       });
     }
