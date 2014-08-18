@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/ichiriac/sofa-odm/issues"
   },
-  "homepage": "https://github.com/ichiriac/sofa-odm",
+  "homepage": "http://ichiriac.github.io/sofa-odm",
   "dependencies": {
     "q": "^1.0.1",
     "couchbase": "^1.2.4",
