@@ -12,16 +12,19 @@ module.exports = function(manager, mapper) {
     this._id = false;
     // sets values
     for(var i in doc) {
-      this[i] = doc[i];
+      if (mapper.options.fields.hasOwnProperty(i)) {
+        this[i] = mapper.options.fields[i].unserialize(doc[i]);
+      } else {
+        this[i] = doc[i];
+      }
     }
   };
-  
 
   // saves the current record
   record.prototype.save = function() {
     var self = this;
     if (!self._id) {
-      return recordManager.next().then(function(id) {
+      return recordManager.nextId().then(function(id) {
         self._id = id;
         return self.save();
       });
@@ -30,8 +33,11 @@ module.exports = function(manager, mapper) {
       try {
         for(var fieldName in mapper.options.fields) {
           var field = mapper.options.fields[fieldName];
-          if (field.hasOwnProperty('type')) {
-            
+          if (!field.validate.type(self[fieldName])) {
+            throw new Error('Unable to validate "' + fieldName + '" type');
+          }
+          if (!field.validate.contents(self[fieldName])) {
+            throw new Error('Unable to validate "' + fieldName + '" contents');
           }
         }
         if (!mapper.options.record.beforeSave.apply(self, [])) {
@@ -88,7 +94,7 @@ module.exports = function(manager, mapper) {
     /**
      * Retrieves the next sequence id
      */
-    next: function() {
+    nextId: function() {
       var result = q.defer();
       if (mapper.options.autoincrement == true) {
         manager.cb.incr(
