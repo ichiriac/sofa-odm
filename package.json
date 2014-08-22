@@ -1,6 +1,6 @@
 {
   "name": "sofa-odm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "NodeJS ODM for Couchbase",
   "main": "main.js",
   "directories": {

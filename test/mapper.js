@@ -48,4 +48,59 @@ describe('test mapper api', function() {
       done();
     }).done();
   });
+  
+  it('should create multi-indexes', function(done) {
+    var multi = couchbase.declare('multi', {
+      fields: {
+        foo: 'string',
+        bar: {
+          type: 'string',
+          index: true
+        },
+        baz: {
+          type: 'string',
+          unique: true
+        }
+      },
+      views: {
+        idx1: {
+          type: 'index',
+          fields: ['foo', 'bar']
+        },
+        idx2: {
+          type: 'index',
+          fields: ['foo', 'baz']
+        },
+        idx3: {
+          type: 'unique',
+          fields: ['foo', 'bar']
+        },
+        /**
+         * No need to check the doc type, done automatically
+         */
+        idx4: {
+          map: function(doc, meta) {
+            if (doc._type && doc._type === "multi") {
+              // index by the first letter of document
+              emit(doc.foo.substring(0, 1), null);
+            }
+          },
+          // call from : couchbase.get('multi').idx4('azerty') ...
+          // nb : auto generated if not defined
+          find: function(foo) {
+            return this.find('idx4', foo.substring(0, 1));
+          }
+        }
+      }
+    });
+    multi.setup().then(function() {
+      assert(multi.idx1 instanceof Function);
+      assert(multi.idx2 instanceof Function);
+      assert(multi.idx3 instanceof Function);
+      assert(multi.idx4 instanceof Function);
+      assert(multi.baz instanceof Function);
+      assert(multi.bar instanceof Function);
+      done();
+    }).done();
+  });
 });

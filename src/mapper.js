@@ -11,6 +11,7 @@ module.exports = function(manager, namespace, options) {
         type:           namespace,
         autoincrement:  true,
         fields:         {},
+        views:          {},
         record:         {
           beforeSave: function() { return true; }
           ,afterSave: function() { return true; }
@@ -26,9 +27,15 @@ module.exports = function(manager, namespace, options) {
     find: function(view, criteria) {
       var result = q.defer();
       if (criteria instanceof Array) {
-        criteria = {
-          keys: criteria
-        };
+        if (criteria.length > 1) {
+          criteria = {
+            keys: criteria
+          };
+        } else {
+          criteria = {
+            key: criteria[0]
+          };
+        }
       } else if (!(criteria instanceof Object)) {
         criteria = {
           key: criteria
@@ -63,17 +70,16 @@ module.exports = function(manager, namespace, options) {
       var result = q.defer();
       var docs = { views: {} };
       var found = false;
-      for(var fieldName in mapper.options.fields) {
-        var field = mapper.options.fields[fieldName];
-        if (field.meta.unique || field.meta.index) {
+      for(var viewName in mapper.options.views) {
+        var view = mapper.options.views[viewName];
+        docs.views[viewName] = {};
+        if (view.hasOwnProperty('map')) {
           found = true;
-          docs.views[fieldName] = {
-            map:  'function(doc,meta) {\n'
-                + '\tif (doc._type && doc._type == ' + JSON.stringify(mapper.options.type) + ') {\n'
-                + '\t\temit(doc.' + fieldName + ', null);\n'
-                + '\t}\n'
-                + '}'
-          };
+          docs.views[viewName].map = view.map;
+        }
+        if (view.hasOwnProperty('reduce')) {
+          found = true;
+          docs.views[viewName].reduce = view.reduce;
         }
       }
       if (found) {
@@ -88,11 +94,50 @@ module.exports = function(manager, namespace, options) {
       return result.promise;
     }
   };
+  // initialize fields properties
   for(var fieldName in mapper.options.fields) {
     mapper.options.fields[fieldName] = require('./field')(
       fieldName,
       mapper.options.fields[fieldName]
     );
+    if (mapper.options.fields[fieldName].meta.unique) {
+      mapper.options.views[fieldName] = {
+        type: 'unique', fields: [fieldName]
+      };
+    } else if (mapper.options.fields[fieldName].meta.index) {
+      mapper.options.views[fieldName] = {
+        type: 'index', fields: [fieldName]
+      };
+    }
+  }
+  // initialize views
+  for(var viewName in mapper.options.views) {
+    var view = mapper.options.views[viewName];
+    // handle map function
+    if (!view.hasOwnProperty('map')) {
+      view.map = 
+        'function(doc, meta) {\n'
+        + '\tif(doc._type && doc._type === ' + JSON.stringify(mapper.options.type) + ') {\n\t\t'
+      ;
+      if (view.fields.length > 1) {
+        view.map += 'emit([doc.' + view.fields.join(', doc.') + '], null);';
+      } else {
+        view.map += 'emit(doc.' + view.fields[0] + ', null);';
+      }
+      view.map += '\n\t}\n}';
+    } else if (view.map instanceof Function) {
+      view.map = view.map.toString();
+    }
+    // handle finder
+    if (view.find instanceof Function) {
+      mapper[viewName] = view.find;
+    } else {
+      (function(viewName) {
+        mapper[viewName] = function() {
+          return this.find(viewName, arguments.length > 1 ? arguments : arguments[0]);
+        };
+      })(viewName);
+    }
   }
   // record manager
   var record = require('./record')(manager, mapper);
