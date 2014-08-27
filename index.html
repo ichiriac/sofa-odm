@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Sofa-odm : Sofa - ODM for Couchbase">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Sofa-odm</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ichiriac/sofa-odm">View on GitHub</a>
+
+          <h1 id="project_title">Sofa-odm</h1>
+          <h2 id="project_tagline">Sofa - ODM for Couchbase</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ichiriac/sofa-odm/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ichiriac/sofa-odm/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="sofa-the-couchbase-odm" class="anchor" href="#sofa-the-couchbase-odm"><span class="octicon octicon-link"></span></a>Sofa the Couchbase ODM</h1>
+
+<p>This library is a tiny &amp; simplistic ODM for Couchbase. </p>
+
+<p>The project is motivated by the need to handle automatically some basic principles 
+that can be found in relational databases like unique fields, auto-incremented keys, 
+indexed columns and some basic requesting.</p>
+
+<h2>
+<a name="install-" class="anchor" href="#install-"><span class="octicon octicon-link"></span></a>Install :</h2>
+
+<pre><code>npm install sofa-odm --save
+</code></pre>
+
+<h2>
+<a name="functionnalities-" class="anchor" href="#functionnalities-"><span class="octicon octicon-link"></span></a>Functionnalities :</h2>
+
+<ul>
+<li>Document type oriented (like tables on relational databases)</li>
+<li>CRUD operations</li>
+<li>Filtering and paginations</li>
+<li>Validating data before its saved</li>
+<li>Automatically creates views for filtering</li>
+<li>Using Promises api</li>
+</ul><p>A lot more can be done to improve this library, but essentials tools are here</p>
+
+<h2>
+<a name="sample-code-" class="anchor" href="#sample-code-"><span class="octicon octicon-link"></span></a>Sample code :</h2>
+
+<p>Bootstrap :</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">require</span><span class="p">(</span><span class="s1">'sofa-odm'</span><span class="p">)({</span>
+  <span class="c1">// connection parameters</span>
+  <span class="nx">host</span><span class="o">:</span> <span class="s1">'localhost:8091'</span><span class="p">,</span>
+  <span class="nx">bucket</span><span class="o">:</span> <span class="s1">'default'</span><span class="p">,</span>
+  <span class="nx">connectionTimeout</span><span class="o">:</span> <span class="mi">50000</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">couchbase</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// registering models</span>
+  <span class="nx">require</span><span class="p">(</span><span class="s1">'./models/user'</span><span class="p">)(</span><span class="nx">couchbase</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">done</span><span class="p">();</span>
+</pre></div>
+
+<p>A mapper structure :</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">couchbase</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">couchbase</span><span class="p">.</span><span class="nx">declare</span><span class="p">(</span><span class="s1">'user'</span><span class="p">,</span> <span class="p">{</span>
+    <span class="c1">// declare fields</span>
+    <span class="nx">fields</span><span class="o">:</span> <span class="p">{</span>
+      <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">type</span><span class="o">:</span> <span class="s1">'string'</span><span class="p">,</span>       <span class="c1">// data type : string, number, boolean, array, object</span>
+        <span class="nx">validate</span><span class="o">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>     <span class="c1">// contraints, depends on data type</span>
+      <span class="p">},</span>
+      <span class="nx">email</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">type</span><span class="o">:</span> <span class="s1">'string'</span><span class="p">,</span>
+        <span class="nx">validate</span><span class="o">:</span> <span class="sr">/S+@S+\.S+/</span><span class="p">,</span>
+        <span class="nx">unique</span><span class="o">:</span> <span class="kc">true</span>
+      <span class="p">},</span>
+      <span class="nx">password</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">type</span><span class="o">:</span> <span class="s1">'string'</span><span class="p">,</span>
+        <span class="nx">validate</span><span class="o">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">};</span>
+</pre></div>
+
+<p>A mapper usage :</p>
+
+<div class="highlight highlight-js"><pre><span class="c1">// create an active record</span>
+<span class="kd">var</span> <span class="nx">john</span> <span class="o">=</span> <span class="nx">couchbase</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'user'</span><span class="p">).</span><span class="nx">create</span><span class="p">({</span>
+  <span class="nx">name</span><span class="o">:</span> <span class="s1">'John Doe'</span><span class="p">,</span>
+  <span class="nx">email</span><span class="o">:</span> <span class="s1">'john@doe.com'</span><span class="p">,</span>
+  <span class="nx">password</span><span class="o">:</span> <span class="s1">'secret'</span>
+<span class="p">});</span>
+<span class="c1">// saves the active record</span>
+<span class="nx">john</span><span class="p">.</span><span class="nx">save</span><span class="p">()</span>
+  <span class="c1">// use a email view to find the user</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">couchbase</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'user'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">'email'</span><span class="p">,</span> <span class="s1">'john@doe.com'</span><span class="p">);</span>
+  <span class="p">})</span>
+  <span class="c1">// deletes the first found record</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">result</span><span class="p">.</span><span class="nx">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">remove</span><span class="p">();</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">done</span><span class="p">()</span>
+<span class="p">;</span>
+</pre></div>
+
+<h2>
+<a name="api-" class="anchor" href="#api-"><span class="octicon octicon-link"></span></a>API :</h2>
+
+<h3>
+<a name="manager" class="anchor" href="#manager"><span class="octicon octicon-link"></span></a>Manager</h3>
+
+<ul>
+<li>
+<strong>declare</strong> (namespace, options) : Declares a new mapper</li>
+<li>
+<strong>get</strong> (namespace) : Gets the mapper</li>
+</ul><h3>
+<a name="mapper" class="anchor" href="#mapper"><span class="octicon octicon-link"></span></a>Mapper</h3>
+
+<ul>
+<li>
+<strong>create</strong> (properties) : Creates a new active record</li>
+<li>
+<strong>find</strong> (viewname, filter) : Filters the specified view</li>
+</ul><h3>
+<a name="active-record" class="anchor" href="#active-record"><span class="octicon octicon-link"></span></a>Active Record</h3>
+
+<ul>
+<li>
+<strong>save</strong> : Saves the current record</li>
+<li>
+<strong>remove</strong> : Removes the current record</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Sofa-odm maintained by <a href="https://github.com/ichiriac">ichiriac</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-37515588-5");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
