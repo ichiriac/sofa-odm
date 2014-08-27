@@ -1,3 +1,11 @@
+title : Sofa ODM
+tagline: NodeJS based Object Data Mapper for Couchbase
+author :
+  name : Ioan CHIRIAC
+  email : i.chiriac@yahoo.com
+permalink: /:year/:month/:day/:title.html
+
 markdown: redcarpet2
+
 redcarpet:
-  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript"]
+  extensions: []

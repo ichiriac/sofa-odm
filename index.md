@@ -13,9 +13,9 @@ indexed columns and some basic requesting.
 
 ## Install :
 
-```
+{% highlight sh %}
 npm install sofa-odm --save
-```
+{% endhighlight %}
 
 ## Functionnalities :
 
@@ -32,7 +32,7 @@ A lot more can be done to improve this library, but essentials tools are here
 
 Bootstrap :
 
-```js
+{% highlight js %}
 require('sofa-odm')({
   // connection parameters
   host: 'localhost:8091',
@@ -42,11 +42,11 @@ require('sofa-odm')({
   // registering models
   require('./models/user')(couchbase);
 }).done();
-```
+{% endhighlight %}
 
 A mapper structure :
 
-```js
+{% highlight js %}
 module.exports = function(couchbase) {
   return couchbase.declare('user', {
     // declare fields
@@ -67,11 +67,11 @@ module.exports = function(couchbase) {
     }
   });
 };
-```
+{% endhighlight %}
 
 A mapper usage :
 
-```js
+{% highlight js %}
 // create an active record
 var john = couchbase.get('user').create({
   name: 'John Doe',
@@ -90,7 +90,7 @@ john.save()
   })
   .done()
 ;
-```
+{% endhighlight %}
 
 ## API :
 
