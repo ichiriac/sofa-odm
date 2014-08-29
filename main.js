@@ -1,53 +1,94 @@
 var cb = require('couchbase');
 var q = require('q');
-var mapper = require('./src/mapper');
-if (process.env.NODE_ENV == 'test') {
-  cb = cb.Mock;
-}
+var extend = require('extend');
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
+
 /**
- * Initialize the couchbase connection
+ * The manager class
  */
-module.exports = function(config) {
+var manager = function(options) {
+  // parent constructor call
+  EventEmitter.call(this);
+  // Handles default options
+  this.options = extend(true,
+      {
+        // list of behaviour handlers
+        behaviours: ['index', 'required', 'unique']
+        // factories
+        , factory: {
+          mapper:     require(__dirname + '/src/mapper')(this),
+          record:     require(__dirname + '/src/record')(this),
+          resultset:  require(__dirname + '/src/resultset')(this),
+        }
+      }, options
+  );
+  // registers events
+  if (this.options.hasOwnProperty('on')) {
+    for(var event in this.options.on) {
+      this.on(event, this.options.on[event]);
+    }
+  }
+  // connects to couchbase
+  if (this.options.hasOwnProperty('couchbase')) {
+    this.connect(this.options.couchbase).done();
+  }
+  // declare registered mappers
+  this.mappers = {};
+  if(this.options.hasOwnProperty('mappers')) {
+    for(var name in this.options.mappers) {
+      this.declare(name, this.options.mappers[name]);
+    }
+  }
+};
+util.inherits(manager, EventEmitter);
+
+/**
+ * Connects to couchbase
+ */
+manager.prototype.connect = function(options) {
   var result = q.defer();
-  var couchbase = new cb.Connection(config || {}, function(err) {
+  var self = this;
+  this.cb = new cb.Connection(options || {}, function(err) {
     if (err) {
       result.reject(err);
+      self.emit('error', err);
+      self.cb = null;
     } else {
-      /**
-       * The couchbase orm
-       */
-      result.resolve({
-        cb: couchbase,
-        mappers: {},
-        /**
-         * Declare a new mapper
-         */
-        declare: function(namespace, options) {
-          if (this.mappers.hasOwnProperty(namespace)) {
-            throw new Error(
-              'Namespace [' + namespace + '] is already defined !'
-            );
-          }
-          this.mappers[namespace] = mapper(this, namespace, options);
-          return this.mappers[namespace];
-        },
-        /**
-         * Gets a mapper
-         */
-        get: function(namespace) {
-          if (!this.mappers.hasOwnProperty(namespace)) {
-            throw new Error('Namespace [' + namespace + '] is undefined !');
-          }
-          return this.mappers[namespace];
-        },
-        /**
-         * Checks if the mapper is defined
-         */
-        has: function(namespace) {
-          return this.mappers.hasOwnProperty(namespace);
-        }
-      });
+      result.resolve(self);
+      self.emit('connect', self);
     }
   });
   return result.promise;
 };
+
+/**
+ * Declare a new mapper
+ */
+manager.prototype.declare = function(namespace, options) {
+  if (this.mappers.hasOwnProperty(namespace)) {
+    throw new Error(
+      'Namespace [' + namespace + '] is already defined !'
+    );
+  }
+  return new this.options.factory.mapper(namespace, options);
+};
+
+/**
+ * Gets a mapper
+ */
+manager.prototype.get = function(namespace) {
+  if (!this.mappers.hasOwnProperty(namespace)) {
+    throw new Error('Namespace [' + namespace + '] is undefined !');
+  }
+  return this.mappers[namespace];
+};
+
+/**
+ * Checks if the mapper is defined
+ */
+manager.prototype.has = function(namespace) {
+  return this.mappers.hasOwnProperty(namespace);
+};
+
+module.exports = manager;
