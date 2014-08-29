@@ -18,11 +18,22 @@ var manager = function(options) {
         // factories
         , factory: {
           mapper:     require(__dirname + '/src/mapper')(this),
-          record:     require(__dirname + '/src/record')(this),
-          resultset:  require(__dirname + '/src/resultset')(this),
+          record:     require(__dirname + '/src/record'),
+          resultset:  require(__dirname + '/src/resultset'),
+          field:      require(__dirname + '/src/field')
         }
       }, options
   );
+  // registers behaviours
+  for(var i = 0; i < this.options.behaviours.length; i++) {
+    var behaviour = this.options.behaviours[i];
+    if (behaviour instanceof String) {
+      this.options.behaviours[i] = require(
+        behaviour[0] == '.' || behaviour[0] == '/' ?
+          behaviour : __dirname + '/src/behaviours/' + behaviour
+      )(this);
+    }
+  }
   // registers events
   if (this.options.hasOwnProperty('on')) {
     for(var event in this.options.on) {
