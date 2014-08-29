@@ -14,13 +14,22 @@ var manager = function(options) {
   this.options = extend(true,
       {
         // list of behaviour handlers
-        behaviours: ['index', 'required', 'unique']
+        behaviours: ['index', 'required', 'unique'],
+        // list of property types validators
+        validators: {
+          'string': 'string',
+          'number': 'number',
+          'object': 'object', 
+          'date': 'date', 
+          'boolean': 'boolean', 
+          'array': 'array'
+        },
         // factories
         , factory: {
           mapper:     require(__dirname + '/src/mapper')(this),
           record:     require(__dirname + '/src/record'),
           resultset:  require(__dirname + '/src/resultset'),
-          field:      require(__dirname + '/src/field')
+          property:   require(__dirname + '/src/property')
         }
       }, options
   );
@@ -31,6 +40,16 @@ var manager = function(options) {
       this.options.behaviours[i] = require(
         behaviour[0] == '.' || behaviour[0] == '/' ?
           behaviour : __dirname + '/src/behaviours/' + behaviour
+      )(this);
+    }
+  }
+  // register validators
+  for(var i in this.options.validators) {
+    var validator = this.options.validators[i];
+    if (validator instanceof String) {
+      this.options.validators[i] = require(
+        validator[0] == '.' || validator[0] == '/' ?
+          validator : __dirname + '/src/validators/' + validator
       )(this);
     }
   }
