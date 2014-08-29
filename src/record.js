@@ -1,5 +1,6 @@
 var q = require('q');
-var uuid = require('node-uuid');
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 
 /**
  * Defines a record
@@ -12,54 +13,63 @@ module.exports = function(manager, mapper) {
     this._id = false;
     // sets values
     for(var i in doc) {
-      if (mapper.options.fields.hasOwnProperty(i)) {
-        this[i] = mapper.options.fields[i].unserialize(doc[i]);
+      if (mapper.options.properties.hasOwnProperty(i)) {
+        this[i] = mapper.options.properties[i].unserialize(doc[i]);
       } else {
         this[i] = doc[i];
       }
     }
   };
+  util.inherits(mapper, EventEmitter);
+
+  // Gets the record ID
+  record.prototype.getId = function() {
+    return mapper.options.autoincrement ? 
+      mapper.options.type + '.' + this._id : this._id
+  };
 
   // saves the current record
   record.prototype.save = function() {
     var self = this;
-    if (!self._id) {
-      return recordManager.nextId().then(function(id) {
+    if (!this._id) {
+      return mapper.nextId().then(function(id) {
         self._id = id;
         return self.save();
       });
     } else {
       var result = q.defer();
       try {
-        for(var fieldName in mapper.options.fields) {
-          var field = mapper.options.fields[fieldName];
-          if (!field.validate.type(self[fieldName])) {
-            throw new Error('Unable to validate "' + fieldName + '" type');
+        for(var name in mapper.options.properties) {
+          var property = mapper.options.properties[name];
+          if (this.hasOwnProperty(name) && !property.checkType(this[name])) {
+            throw new Error('Unable to validate "' + name + '" type');
           }
-          if (!field.validate.contents(self[fieldName])) {
-            throw new Error('Unable to validate "' + fieldName + '" contents');
+          if (!property.checkContents(this[name])) {
+            throw new Error('Unable to validate "' + name + '" contents');
           }
         }
-        if (!mapper.options.record.beforeSave.apply(self, [])) {
-          throw new Error('Unable to save the record');
-        }
+        this.emit('save', this);
+        mapper.emit('save', this);
         // reserved field _type
-        self._type = mapper.options.type;
+        this._type = mapper.options.type;
         manager.cb.set(
-          mapper.options.autoincrement ? mapper.options.type + '.' + self._id : self._id, self,
+          this.getId(), this,
           function(err, data) {
             if (err) {
               result.reject(err);
+              self.emit('error', err);
+              mapper.emit('error', err);
             } else {
-              if (!mapper.options.record.afterSave.apply(self, [])) {
-                throw new Error('Unable to save the record');
-              }
               result.resolve(self);
+              self.emit('saved', self);
+              mapper.emit('saved', self);
             }
           }
         );
-      } catch(e) {
-        result.reject(e);
+      } catch(err) {
+        result.reject(err);
+        this.emit('error', err);
+        mapper.emit('error', err);
       }
       return result.promise;
     }
@@ -69,56 +79,32 @@ module.exports = function(manager, mapper) {
   record.prototype.remove = function() {
     var result = q.defer();
     var self = this;
-    if (this._id) {
-      if (!mapper.options.record.beforeRemove.apply(self, [])) {
-        throw new Error('Unable to remove the record');
-      }
-      manager.cb.remove(
-        mapper.options.autoincrement ? mapper.options.type + '.' + this._id : this._id
-        , function(err) {
+    try {
+      if (!this._id) throw new Error(
+        "Can not remove, the entry is not saved yet"
+      );
+      this.emit('remove', this);
+      mapper.emit('remove', this);
+      manager.cb.remove(this.getId(), function(err) {
         if (err) {
           result.reject(err);
+          self.emit('error', err);
+          mapper.emit('error', err);
         } else {
-          mapper.options.record.afterRemove.apply(self, []);
+          // reset the current field ID
+          this._id = false;
           result.resolve(self);
+          self.emit('removed', self);
+          mapper.emit('removed', self);
         }
       });
-    } else {
-      result.reject(new Error("Can not remove, the entry is not saved yet"));
+    } catch(err) {
+      result.reject(err);
+      this.emit('error', err);
+      mapper.emit('error', err);
     }
     return result.promise;
   };
-
-  // manager
-  var recordManager = {
-    /**
-     * Retrieves the next sequence id
-     */
-    nextId: function() {
-      var result = q.defer();
-      if (mapper.options.autoincrement == true) {
-        manager.cb.incr(
-          'seq.' + mapper.options.type, 
-          {initial: 1, offset: 1},
-          function(err, data) {
-            if (err) {
-              result.reject(err);
-            } else {
-              result.resolve(data.value);
-            }
-          }
-        );
-      } else {
-        result.resolve(uuid.v4());
-      }
-      return result.promise;
-    },
-    /**
-     * Deserialize a document into an active record
-     */
-    deserialize: function(doc) {
-      return new record(doc);
-    }
-  };
-  return recordManager;
+  // expose the record class
+  return record;
 };
