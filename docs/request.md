@@ -5,4 +5,4 @@ title: Requesting data from CouchBase
 
 {% include menu.html %}
 
-{% include doc.html page="doc/request.md" %}
+{% include doc.html page="request.md" %}

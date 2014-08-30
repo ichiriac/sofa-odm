@@ -5,4 +5,4 @@ title: Quick start with Sofa ODM
 
 {% include menu.html %}
 
-{% include doc.html page="doc/index.md" %}
+{% include doc.html page="index.md" %}

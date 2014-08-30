@@ -1,0 +1,42 @@
+
+  <div class='content-root'>
+    <div class='menubar'>
+      <div class="section">
+        <a class="big button" href="https://github.com/ichiriac/sofa-odm/zipball/master" target="_blank">Download</a>
+      </div>
+      <div class="section">
+        <strong>Classes</strong>
+        <ul>
+          <li><a href="/sofa-odm/api/main">Session Manager</a></li>
+          <li><a href="/sofa-odm/api/mapper">Mapper</a></li>
+          <li><a href="/sofa-odm/api/record">Record</a></li>
+          <li><a href="/sofa-odm/api/resultset">Resultset</a></li>
+          <li><a href="/sofa-odm/api/property">Property</a></li>
+          <li><a href="/sofa-odm/api/view">View</a></li>
+        </ul>
+        <strong>Validators</strong>
+        <ul>
+          <li><a href="/sofa-odm/api/validators/string">String</a></li>
+          <li><a href="/sofa-odm/api/validators/string">Number</a></li>
+          <li><a href="/sofa-odm/api/validators/string">Object</a></li>
+          <li><a href="/sofa-odm/api/validators/array">Array</a></li>
+          <li><a href="/sofa-odm/api/validators/date">Date</a></li>
+          <li><a href="/sofa-odm/api/validators/boolean">Boolean</a></li>
+        </ul>
+        <strong>Behaviours</strong>
+        <ul>
+          <li><a href="/sofa-odm/api/behaviours/index">Index</a></li>
+          <li><a href="/sofa-odm/api/validators/required">Required</a></li>
+          <li><a href="/sofa-odm/api/validators/unique">Unique</a></li>
+        </ul>
+      </div>
+      <div class='menu section' role='flatdoc-menu'></div>
+    </div>
+    <div role='flatdoc-content' class='content'></div>
+  </div>
+  <!-- Initializer -->
+  <script>
+    Flatdoc.run({
+      fetcher: Flatdoc.github('ichiriac/sofa-odm', 'doc/api/{{ include.page }}')
+    });
+  </script>

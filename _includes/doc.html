@@ -2,7 +2,7 @@
   <div class='content-root'>
     <div class='menubar'>
       <div class="section">
-        <a class="big button" href="https://github.com/ichiriac/sofa-odm/zipball/master" target="_blank">Download</a>
+        <a class="big button" style="margin-bottom: 30px;" href="https://github.com/ichiriac/sofa-odm/zipball/master" target="_blank">Download</a>
         <a class="big button" href="/sofa-odm/api/">View API</a>
       </div>
       <div class="section">
@@ -23,6 +23,6 @@
   <!-- Initializer -->
   <script>
     Flatdoc.run({
-      fetcher: Flatdoc.github('ichiriac/sofa-odm', '{{ include.page }}')
+      fetcher: Flatdoc.github('ichiriac/sofa-odm', 'doc/{{ include.page }}')
     });
   </script>
