@@ -10,6 +10,12 @@ module.exports = function(manager) {
     // contents validator
     if (property.hasOwnProperty('validate')) {
       var checkContents = property.checkContents;
+      var valType = typeof(property.validate);
+      if (valType === 'number') {
+        property.validate = [0, property.validate];
+      } else if (valType === 'string') {
+        property.validate = new RegExp(property.validate);
+      }
       if (property.validate instanceof Array) {
         property.checkContents = function(value) {
           if (property.validate.length == 1) {
@@ -29,7 +35,7 @@ module.exports = function(manager) {
       } else if (property.validate instanceof RegExp) {
         property.checkContents = function(value) {
           if (!property.validate.test(value)) {
-            throw new Error('Bad format for "' + property.name + '"');
+            throw new Error('Bad format for "' + property.name + '", does not match with ' + property.validate);
           }
           return checkContents(value);
         };
