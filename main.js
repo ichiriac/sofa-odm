@@ -59,6 +59,7 @@ var manager = function(options) {
   // factories
   this.factory = {
     mapper:     require(__dirname + '/src/mapper')(this),
+    view:       require(__dirname + '/src/view')(this),
     record:     require(__dirname + '/src/record'),
     resultset:  require(__dirname + '/src/resultset'),
     property:   require(__dirname + '/src/property'),
