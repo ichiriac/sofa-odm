@@ -2,6 +2,10 @@
 module.exports = function(manager, mapper) {
   // initialize a new property holder
   var property = function(options, name) {
+    // shortcut
+    if (typeof options == 'string') {
+      options = { type: options };
+    }
     // copy options
     for(var i in options) {
       this[i] = options[i];
