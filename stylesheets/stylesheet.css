@@ -449,7 +449,7 @@ nav ul li a {
   padding-bottom: 7px;
   padding-left: 14px;
   padding-right: 14px;
-  padding-top: 7px;
+  padding-top: 11px;
   text-align: left;
   text-transform: uppercase;
 }
@@ -488,4 +488,16 @@ aside#doc {
   border: solid 1px #999999;
   padding: 8px;
   float: right;
+  background-color: #ffffff;
+  width: 320px;
+  margin-right: -175px;
+}
+aside#doc h2 {
+  font-size: 24px;
+  margin-top: -7px;
+}
+
+aside#doc ul {
+  list-style: none;
+  padding-left: 6px;
 }
