@@ -13,4 +13,5 @@ before_install:
   - /opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=tests --bucket-type=couchbase --bucket-ramsize=100 --bucket-port=11211 --bucket-replica=0 -u Administrator -p password
 
 language: node_js
-node_js: ["0.10"]
+node_js:
+  - '0.10.30'
