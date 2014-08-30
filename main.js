@@ -79,21 +79,22 @@ util.inherits(manager, EventEmitter);
  * Connects to couchbase
  */
 manager.prototype.connect = function(options) {
-  if (this.cb) {
-    this.cb.shutdown();
-  }
   var result = q.defer();
   var self = this;
-  this.cb = new cb.Connection(options || {}, function(err) {
-    if (err) {
-      result.reject(err);
-      self.emit('error', err);
-      self.cb = null;
-    } else {
-      result.resolve(self);
-      self.emit('connect', self);
-    }
-  });
+  if (!this.cb) {
+    this.cb = new cb.Connection(options || {}, function(err) {
+      if (err) {
+        result.reject(err);
+        self.emit('error', err);
+        self.cb = null;
+      } else {
+        result.resolve(self);
+        self.emit('connect', self);
+      }
+    });
+  } else {
+    result.resolve(self);
+  }
   return result.promise;
 };
 
