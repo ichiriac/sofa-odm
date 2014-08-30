@@ -60,6 +60,15 @@ module.exports = function(manager, mapper) {
       return false;
     }
   };
+  /**
+   * Reads each item in current resultset
+   */
+  resultset.prototype.each = function(cb) {
+    for(var i = 0; i < this.rows.length; i++) {
+      cb(this.rows[i]);
+    }
+    return this;
+  };
   // the resultset class
   return resultset;
 };
