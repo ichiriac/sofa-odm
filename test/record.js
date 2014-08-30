@@ -28,6 +28,12 @@ describe('test record api', function() {
         baz: {
           type: 'string',
           validate: /[0-9]+/
+        },
+        num: {
+          type: 'number',
+          get: function() {
+            return this.__buffer.num * 2;
+          }
         }
       }
     });
@@ -40,6 +46,8 @@ describe('test record api', function() {
       bar: 'abc',
       baz: '123'
     });
+    entry.num = 2;
+    assert(entry.num == 4, 'Should use getter !');
     entry.save().then(function() {
       done();
     }).done();
