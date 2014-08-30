@@ -149,7 +149,18 @@ module.exports = function(manager, mapper, body) {
   
   // extends with custom functions
   for(var name in body) {
-    record.prototype[name] = body[name];
+    if (body[name] instanceof Function) {
+      (function(body, name, record) {
+        var parent = record.prototype.hasOwnProperty(name) ? record.prototype[name] : null;
+        record.prototype[name] = function() {
+          var args = Array.prototype.slice(arguments);
+          args.unshift(parent);
+          return body[name].apply(this, args);
+        };
+      })(body, name, record);
+    } else {
+      record.prototype[name] = body[name];
+    }
   }
   
   // expose the record class

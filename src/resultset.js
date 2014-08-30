@@ -5,7 +5,7 @@ var q = require('q');
 module.exports = function(manager, mapper) {
   // resultset constructor
   var resultset = function(data, options) {
-    this.criteria = options.criteria;
+    this.criteria = options.criteria; 
     this.length = options.misc.total_rows;
     this.offset = options.criteria.skip;
     this.limit = options.criteria.limit;

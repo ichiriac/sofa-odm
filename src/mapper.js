@@ -21,7 +21,8 @@ module.exports = function(manager) {
         type:           namespace,
         autoincrement:  true,
         properties:     {},
-        views:          {}
+        views:          {},
+        record:         {}
       }
       , options
     );
@@ -47,7 +48,7 @@ module.exports = function(manager) {
     // initialize views
     this.views = new manager.factory.view(this, this.options.views);
     // register record factory
-    this.factory.record = manager.factory.record(manager, this, options.record || {});
+    this.factory.record = manager.factory.record(manager, this, this.options.record);
     // chain events to manager
     this.on('error', function(err) { manager.emit('error', err); });
     this.on('save', function(record) { manager.emit('save', record); });

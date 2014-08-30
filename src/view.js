@@ -10,7 +10,8 @@ module.exports = function(manager) {
   var view = function(mapper, views) {
     this.mapper = mapper;
     this.views = views;
-    var checkUnique = false;
+    var checkUnique = [];
+    var self = this;
     // initialize each view
     for(var name in this.views) {
       var view = this.views[name];
@@ -35,7 +36,9 @@ module.exports = function(manager) {
       } else if (typeof view.map !== 'string') {
         throw new Error('Bad map format for "'+name+'" view, expecting a string or a function');
       }
-      if (view.hasOwnProperty('type') && view.type == 'unique') checkUnique = true;
+      if (view.hasOwnProperty('type') && view.type == 'unique') {
+        checkUnique.push([name, view.properties]);
+      }
       // handle finder
       if (view.find instanceof Function) {
         mapper[name] = view.find;
@@ -48,11 +51,62 @@ module.exports = function(manager) {
       }
     }
     // handle the unique constraint
-    if (checkUnique) {
-      // @todo
+    if (checkUnique.length > 0) {
+      // check unique entries before save
+      mapper.options.record.save = function(parent) {
+        var result = q.defer();
+        var checks = [];
+        var record = this;
+        for(var i = 0; i < checkUnique.length; i++) {
+          checks.push(self.isUnique(mapper, record, checkUnique[i][0], checkUnique[i][1]));
+        }
+        q.all(checks).then(function() {
+          return parent.apply(record, []);
+        }).then(function(data) {
+          result.resolve(data);
+        }, function(err) {
+          result.reject(err);
+        }).done();
+        return result.promise;
+      };
     }
   };
-  
+
+  /**
+   * Helper that checks if the entry values are unique
+   */
+  view.prototype.isUnique = function(mapper, record, view, columns) {
+    var result = q.defer();
+    var args = [];
+    for(var i = 0; i < columns.length; i++) {
+      var name = columns[i];
+      args.push( 
+        record.hasOwnProperty(name) ? 
+          mapper.options.properties[name].unserialize(record[name]) : null 
+      );
+    }
+    mapper[view]({
+      key: args,
+      limit: 1
+    }).then(function(items) {
+      if ( 
+        !items.rows[0] ||
+        items.rows[0].getId() == record.getId()
+      ) {
+        result.resolve(true);
+      } else {
+        result.reject(new Error(
+          'Unique ' + view + ' constraint failed with [' 
+          + columns.join(', ') + '], document "' 
+          + items.rows[0].getId() + '" conflicts'
+        ));
+      }
+    }, function(err) {
+      result.reject(err);
+    }).done();
+    return result.promise;
+  };
+
   /**
    * Setup the views
    */
