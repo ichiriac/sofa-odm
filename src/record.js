@@ -91,7 +91,7 @@ module.exports = function(manager, mapper, body) {
         this._type = mapper.options.type;
         manager.cb.set(
           this.getId(), this, 
-          wait ? { persist_to: 1 } : {},
+          wait ? { persist_to: 1, replicate_to: 0, spooled: false } : {},
           function(err, data) {
             if (err) {
               result.reject(err);
@@ -114,7 +114,7 @@ module.exports = function(manager, mapper, body) {
   };
   
   // removes the current entry
-  record.prototype.remove = function() {
+  record.prototype.remove = function(wait) {
     var result = q.defer();
     var self = this;
     try {
@@ -123,19 +123,22 @@ module.exports = function(manager, mapper, body) {
       );
       this.emit('remove', this);
       mapper.emit('remove', this);
-      manager.cb.remove(this.getId(), function(err) {
-        if (err) {
-          result.reject(err);
-          self.emit('error', err);
-          mapper.emit('error', err);
-        } else {
-          // reset the current field ID
-          self._id = false;
-          result.resolve(self);
-          self.emit('removed', self);
-          mapper.emit('removed', self);
+      manager.cb.remove(this.getId(), 
+        wait ? { persist_to: 1, replicate_to: 0, spooled: false } : {},
+        function(err) {
+          if (err) {
+            result.reject(err);
+            self.emit('error', err);
+            mapper.emit('error', err);
+          } else {
+            // reset the current field ID
+            self._id = false;
+            result.resolve(self);
+            self.emit('removed', self);
+            mapper.emit('removed', self);
+          }
         }
-      });
+      );
     } catch(err) {
       result.reject(err);
       this.emit('error', err);
