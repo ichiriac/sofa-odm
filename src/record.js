@@ -30,6 +30,14 @@ module.exports = function(manager, mapper, body) {
     value: {}
   });
 
+  // Hide the EventEmitter property, avoid its serialisation
+  Object.defineProperty(record.prototype, "_events", {
+    enumerable: false,
+    configurable: false,
+    writable: true,
+    value: {}
+  });
+
   // handles getters & setters
   for(var name in mapper.options.properties) {
     var property = mapper.options.properties[name];
@@ -58,12 +66,12 @@ module.exports = function(manager, mapper, body) {
   };
 
   // saves the current record
-  record.prototype.save = function() {
+  record.prototype.save = function(wait) {
     var self = this;
     if (!this._id) {
       return mapper.nextId().then(function(id) {
         self._id = id;
-        return self.save();
+        return self.save(wait);
       });
     } else {
       var result = q.defer();
@@ -82,7 +90,8 @@ module.exports = function(manager, mapper, body) {
         // reserved field _type
         this._type = mapper.options.type;
         manager.cb.set(
-          this.getId(), this,
+          this.getId(), this, 
+          wait ? { persist_to: 1 } : {},
           function(err, data) {
             if (err) {
               result.reject(err);
