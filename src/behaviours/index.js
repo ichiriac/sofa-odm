@@ -1,8 +1,8 @@
-module.exports = function(field, mapper, name) {
-  if (field.meta.unique) {
+module.exports = function(mapper, property, name) {
+  if (property.index) {
     mapper.options.views[name] = {
       type: 'index', fields: [name]
     };
   }
-  return field;
+  return property;
 };
