@@ -1,0 +1,15 @@
+  <div class='content-root'>
+    <div class='menubar'>
+      <div class="section">
+        <a class="big button" href="https://github.com/ichiriac/sofa-odm/zipball/master" target="_blank">Download</a>
+      </div>
+      <div class='menu section' role='flatdoc-menu'></div>
+    </div>
+    <div role='flatdoc-content' class='content'></div>
+  </div>
+  <!-- Initializer -->
+  <script>
+    Flatdoc.run({
+      fetcher: Flatdoc.github('ichiriac/sofa-odm', '{{ include.page }}')
+    });
+  </script>
