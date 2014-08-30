@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha",
-    "coverage": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec -t 5000"
+    "coverage": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec -t 5000",
+    "doc": "node ./node_modules/jsdox/bin/jsdox --output docs main.js src && node ./node_modules/jsdox/bin/jsdox --output docs/behaviours src/validator && node ./node_modules/jsdox/bin/jsdox --output docs/validators src/validators"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
   },
   "devDependencies": {
     "mocha": "^1.21.4",
-    "istanbul": "^0.3.0"
+    "istanbul": "^0.3.0",
+    "jsdox": "^0.4.2"
   }
 }
