@@ -23,10 +23,10 @@ module.exports = function(manager) {
               throw new Error('"' + property.name + '" size exceeds ' + property.validate[0] + ' limit');
             }
           } else {
-            if (value.length > property.validate[1]) {
+            if (value && value.length > property.validate[1]) {
               throw new Error('"' + property.name + '" size exceeds ' + property.validate[1] + ' limit');
             }
-            if (value.length < property.validate[0]) {
+            if (property.validate[0] > 0 && (!value || value.length < property.validate[0])) {
               throw new Error('"' + property.name + '" must contain at least ' + property.validate[0] + ' chars');
             }
           }
