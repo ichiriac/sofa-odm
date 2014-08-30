@@ -7,8 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha",
-    "coverage": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec -t 5000",
+    "test": "node ./node_modules/mocha/bin/mocha -t 10000",
+    "coverage": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec",
     "doc": "node ./node_modules/jsdox/bin/jsdox --output doc/api main.js src && node ./node_modules/jsdox/bin/jsdox --output doc/api/behaviours src/behaviours && node ./node_modules/jsdox/bin/jsdox --output doc/api/validators src/validators"
   },
   "repository": {
