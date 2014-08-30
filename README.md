@@ -1,28 +1,28 @@
 # Sofa the Couchbase ODM
 
-This library is a tiny & simplistic ODM for Couchbase. 
+Sofa ODM is a tiny & simplistic ODM for Couchbase that will help you to build
+a business model layer with ease, and without having to deal with technicals
+aspects of Couchbase like views and requesting.
 
-The project is motivated by the need to handle automatically some basic principles 
-that can be found MongoDB or in relational databases like : unique fields, auto-incremented keys, 
-indexed columns, basic CRUD operations, and classical ORM behaviours (validating data).
+ * CRUD operations
+ * Getters & Setters on records properties
+ * Validating data before saving it
+ * Filtering and paginations
+ * Setup views and helpers for filtering (support also customized views)
+ * Mappers definition are compliant with JSON Schema Definition
+ * Using Promises API and EventEmitter
 
-## Install :
+*Current version: [v/0.1.2][dist]*
+
+[![Build Status](https://travis-ci.org/ichiriac/sofa-odm.svg)](https://travis-ci.org/ichiriac/sofa-odm)
+
+## Getting started
 
 ```
 npm install sofa-odm --save
 ```
 
-## Functionnalities :
-
-* CRUD operations
-* Getters & Setters on records properties
-* Validating data before saving it
-* Filtering and paginations
-* Setup views and helpers for filtering (support also customized views)
-* Mappers definition are compliant with JSON Schema Definition
-* Using Promises API and EventEmitter
-
-## Sample code :
+## Sample code
 
 ```js
 var sofa = require('sofa-odm');
@@ -77,12 +77,6 @@ session.connect({
 }).done();
 ```
 
-
-## Documentation
-
-The documentation can be found at this address : http://ichiriac.github.io/sofa-odm/doc
-(work still in progress)
-
-#License
+#Misc
 
 This code is distribute under The MIT License (MIT), authored by Ioan CHIRIAC.
