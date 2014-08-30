@@ -4,7 +4,7 @@ module.exports = function(manager) {
     // type validator
     var checkType = property.checkType;
     property.checkType = function(value) {
-      return value instanceof String && checkType(value);
+      return typeof value === 'string' && checkType(value);
     };
 
     // contents validator
