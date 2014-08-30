@@ -82,7 +82,11 @@ manager.prototype.connect = function(options) {
   var result = q.defer();
   var self = this;
   if (!this.cb) {
-    this.cb = new cb.Connection(options || {}, function(err) {
+    var builder = cb.Connection;
+    if (options.mock) {
+      builder = cb.Mock.Connection;
+    }
+    this.cb = new builder(options || {}, function(err) {
       if (err) {
         result.reject(err);
         self.emit('error', err);
@@ -92,6 +96,10 @@ manager.prototype.connect = function(options) {
         self.emit('connect', self);
       }
     });
+    if (options.mock) {
+      result.resolve(this);
+      self.emit('connect', this);
+    }
   } else {
     result.resolve(self);
   }
