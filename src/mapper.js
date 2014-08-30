@@ -21,7 +21,7 @@ module.exports = function(manager) {
         type:           namespace,
         autoincrement:  true,
         properties:     {},
-        views:          {},
+        views:          {}
       }
       , options
     );
@@ -45,34 +45,7 @@ module.exports = function(manager) {
       }
     }
     // initialize views
-    for(var name in this.options.views) {
-      var view = this.options.views[name];
-      // handle map function
-      if (!view.hasOwnProperty('map')) {
-        view.map = 
-          'function(doc, meta) {\n'
-          + '\tif(doc._type && doc._type === ' + JSON.stringify(this.options.type) + ') {\n\t\t'
-        ;
-        if (view.fields.length > 1) {
-          view.map += 'emit([doc.' + view.fields.join(', doc.') + '], null);';
-        } else {
-          view.map += 'emit(doc.' + view.fields[0] + ', null);';
-        }
-        view.map += '\n\t}\n}';
-      } else if (view.map instanceof Function) {
-        view.map = view.map.toString();
-      }
-      // handle finder
-      if (view.find instanceof Function) {
-        this[name] = view.find;
-      } else {
-        (function(viewName) {
-          self[viewName] = function() {
-            return self.find(viewName, arguments.length > 1 ? arguments : arguments[0]);
-          };
-        })(name);
-      }
-    }
+    this.views = new manager.factory.view(this, this.options.views);
     // register record factory
     this.factory.record = manager.factory.record(manager, this, options.record || {});
     // chain events to manager
@@ -171,34 +144,7 @@ module.exports = function(manager) {
    * Automatically creates views into couchbase
    */
   mapper.prototype.setup = function() {
-    var result = q.defer();
-    var docs = { views: {} };
-    var found = false;
-    var self = this;
-    for(var name in this.options.views) {
-      var view = this.options.views[name];
-      docs.views[name] = {};
-      if (view.hasOwnProperty('map')) {
-        found = true;
-        docs.views[name].map = view.map;
-      }
-      if (view.hasOwnProperty('reduce')) {
-        found = true;
-        docs.views[name].reduce = view.reduce;
-      }
-    }
-    if (found) {
-      manager.cb.setDesignDoc(this.options.type, docs, function(err) {
-        if (err) {
-          result.reject(err);
-          self.emit('error', err);
-        } else {
-          result.resolve(docs);
-          self.emit('setup', docs);
-        }
-      });
-    } else result.resolve(false);
-    return result.promise;
+    return this.views.setup();
   };
   // returns the mapper class
   return mapper;
