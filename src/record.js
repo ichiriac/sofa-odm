@@ -22,6 +22,35 @@ module.exports = function(manager, mapper, body) {
   };
   util.inherits(record, EventEmitter);
 
+  // declare cached variables (not serialized)
+  Object.defineProperty(record.prototype, "__buffer", {
+    enumerable: false,
+    configurable: false,
+    writable: true,
+    value: {}
+  });
+
+  // handles getters & setters
+  for(var name in mapper.options.properties) {
+    var property = mapper.options.properties[name];
+    if (
+      property.hasOwnProperty('get') 
+      || property.hasOwnProperty('set') 
+    ) {
+      Object.defineProperty(record.prototype, name, {
+          get: property.hasOwnProperty('get') ? property.get : function() {
+              return this.__buffer[name];
+          },
+          set: property.hasOwnProperty('set') ? property.set : function(value) {
+              this.__buffer[name] = value;
+          },
+          enumerable: true,
+          configurable: false
+      });
+    }
+  }
+
+
   // Gets the record ID
   record.prototype.getId = function() {
     return mapper.options.autoincrement ? 
