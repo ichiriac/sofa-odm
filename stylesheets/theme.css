@@ -86,11 +86,15 @@
 }
 
 
-.section h2 {
+.section.navigation h2 {
   margin-top: 6px;
   margin-bottom: 2px;
   color: #9090aa;
   font-family: montserrat, sans-serif;
-  font-size: 0.9em;
+  font-size: 1.2em;
   font-weight: bold;
+}
+
+.section.navigation ul li a {
+  margin-left: 8px;
 }
