@@ -6,6 +6,7 @@ module.exports = function() {
   session.removeAllListeners();
   return session.connect({
     host: 'localhost:8091',
-    bucket: 'tests'
+    bucket: 'tests',
+    mock: true
   });
 };
