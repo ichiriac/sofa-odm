@@ -5,7 +5,7 @@ var EventEmitter = require('events').EventEmitter;
 /**
  * Defines a record
  */
-module.exports = function(manager, mapper) {
+module.exports = function(manager, mapper, body) {
 
   // record constructor
   var record = function(doc) {
@@ -105,6 +105,12 @@ module.exports = function(manager, mapper) {
     }
     return result.promise;
   };
+  
+  // extends with custom functions
+  for(var name in body) {
+    record.prototype[name] = body[name];
+  }
+  
   // expose the record class
   return record;
 };

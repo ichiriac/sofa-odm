@@ -25,7 +25,7 @@ module.exports = function(manager) {
         // register factories
         factory: {
           property:     manager.options.factory.property(manager, this),
-          record:       manager.options.factory.record(manager, this),
+          record:       manager.options.factory.record(manager, this, options.record || {}),
           resultset:    manager.options.factory.resultset(manager, this)
         }
       }
