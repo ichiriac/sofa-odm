@@ -20,11 +20,11 @@ module.exports = function(manager) {
       {
         type:           namespace,
         autoincrement:  true,
-        fields:         {},
+        properties:     {},
         views:          {},
         // register factories
         factory: {
-          field:        manager.options.factory.field(manager, this),
+          property:     manager.options.factory.property(manager, this),
           record:       manager.options.factory.record(manager, this),
           resultset:    manager.options.factory.resultset(manager, this)
         }
@@ -32,15 +32,15 @@ module.exports = function(manager) {
       , options
     );
     // initialize fields properties
-    for(var name in this.options.fields) {
-      this.options.fields[name] = new this.options.factory.field(
-        name, this.options.fields[name]
+    for(var name in this.options.properties) {
+      this.options.properties[name] = new this.options.factory.property(
+        this.options.properties[name], name
       );
       // behaviour decorator
       for(var i = 0; i < manager.options.behaviours.length; i++) {
-        this.options.fields[name] = manager.options.behaviours[i].apply(
+        this.options.properties[name] = manager.options.behaviours[i].apply(
           manager, [
-            this, this.options.fields[name], name
+            this, this.options.properties[name], name
           ]
         );
       }
@@ -52,7 +52,7 @@ module.exports = function(manager) {
       if (!view.hasOwnProperty('map')) {
         view.map = 
           'function(doc, meta) {\n'
-          + '\tif(doc._type && doc._type === ' + JSON.stringify(mapper.options.type) + ') {\n\t\t'
+          + '\tif(doc._type && doc._type === ' + JSON.stringify(this.options.type) + ') {\n\t\t'
         ;
         if (view.fields.length > 1) {
           view.map += 'emit([doc.' + view.fields.join(', doc.') + '], null);';
@@ -74,21 +74,24 @@ module.exports = function(manager) {
         })(name);
       }
     }
-    // chain error to manager
-    this.on('error', function(err) {
-      manager.emit('error', err);
-    });
+    // chain events to manager
+    this.on('error', function(err) { manager.emit('error', err); });
+    this.on('save', function(record) { manager.emit('save', record); });
+    this.on('saved', function(record) { manager.emit('saved', record); });
+    this.on('remove', function(record) { manager.emit('remove', record); });
+    this.on('removed', function(record) { manager.emit('removed', record); });
     // registers itself into the manager
     manager.mappers[namespace] = this;
     manager.emit('declare', this);
   };
   util.inherits(mapper, EventEmitter);
-  
+
   /**
    * Finds data from the specified resultset
    */
   mapper.prototype.find = function(view, criteria) {
     var result = q.defer();
+    var self = this;
     // handling criteria parameters
     if (criteria instanceof Array) {
       if (criteria.length > 1) {
@@ -117,7 +120,7 @@ module.exports = function(manager) {
         result.reject(err);
         self.emit('error', err);
       } else {
-        var resultset = new this.options.factory.resultset(
+        var resultset = new self.options.factory.resultset(
           data, {
             view: view,
             misc: misc,
@@ -144,7 +147,7 @@ module.exports = function(manager) {
     var self = this;
     if (this.options.autoincrement == true) {
       manager.cb.incr(
-        'seq.' + mapper.options.type, 
+        'seq.' + this.options.type, 
         {initial: 1, offset: 1},
         function(err, data) {
           if (err) {
@@ -166,7 +169,7 @@ module.exports = function(manager) {
   /**
    * Automatically creates views into couchbase
    */
-  mapper.prototype.setup: function() {
+  mapper.prototype.setup = function() {
     var result = q.defer();
     var docs = { views: {} };
     var found = false;
