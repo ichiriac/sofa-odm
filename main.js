@@ -99,6 +99,20 @@ manager.prototype.connect = function(options) {
 };
 
 /**
+ * Disconnects from the current session
+ */
+manager.prototype.disconnect = function() {
+  var result = q.defer();
+  if (this.cb) {
+    this.cb.shutdown();
+    this.cb = null;
+    this.emit('disconnect', this);
+  }
+  result.resolve(this);
+  return result.promise;
+};
+
+/**
  * Declare a new mapper
  */
 manager.prototype.declare = function(namespace, options) {

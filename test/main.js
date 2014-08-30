@@ -43,12 +43,15 @@ describe('test main api', function() {
     couchbase.on('error', function(e) {
       done();
     });
-    couchbase.connect({
-      bucket: 'unknown'
+    couchbase.disconnect().then(function() {
+      return couchbase.connect({
+        bucket: 'unknown'
+      });
     }).then(function() {
       assert(false, 'should not be connected to "unknown" bucket !');
     }, function() { 
-      // ignore error from promise, use the event 
+      // ignore error from promise, use the event
+      assert(true); 
     }).done();
   });
 });
