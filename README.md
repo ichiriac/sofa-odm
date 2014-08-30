@@ -12,6 +12,11 @@ indexed columns, basic CRUD operations, and classical ORM behaviours (validating
 npm install sofa-odm --save
 ```
 
+## Releases :
+
+0.1.0 : Mature API with test coverage
+0.0.4 : Prototype versions, for testing purpose
+
 ## Functionnalities :
 
 * CRUD operations
