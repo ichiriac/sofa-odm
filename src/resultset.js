@@ -4,12 +4,12 @@ var q = require('q');
  */
 module.exports = function(manager, mapper) {
   // resultset constructor
-  var resultset = function(view, criteria, data, misc) {
-    this.criteria = criteria;
-    this.length = misc.total_rows;
-    this.offset = criteria.skip;
-    this.limit = criteria.limit;
-    this.view = view;
+  var resultset = function(data, options) {
+    this.criteria = options.criteria;
+    this.length = options.misc.total_rows;
+    this.offset = options.criteria.skip;
+    this.limit = options.criteria.limit;
+    this.view = options.view;
     this.rows = [];
     for(var i = 0; i < data.length; i++) {
       if (data[i].doc && data[i].doc.json) {
@@ -60,10 +60,6 @@ module.exports = function(manager, mapper) {
       return false;
     }
   };
-  // manager
-  return {
-    deserialize: function(view, criteria, data, misc) {
-      return new resultset(view, criteria, data, misc);
-    }
-  };
+  // the resultset class
+  return resultset;
 };
