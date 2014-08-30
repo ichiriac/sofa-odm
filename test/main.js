@@ -3,7 +3,7 @@ var assert = require('assert');
 describe('test main api', function() {
   var couchbase;
   it('should connect to couchbase', function(done) {
-    require('./connector')().then(function(api) {
+    require('./connector')(false).then(function(api) {
       assert(typeof api.declare === 'function', 'should have declare function');
       assert(typeof api.get === 'function', 'should have get function');
       assert(typeof api.has === 'function', 'should have has function');
