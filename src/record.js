@@ -78,7 +78,7 @@ module.exports = function(manager, mapper, body) {
       try {
         for(var name in mapper.options.properties) {
           var property = mapper.options.properties[name];
-          if (this.hasOwnProperty(name) && !property.checkType(this[name])) {
+          if (this.hasOwnProperty(name) && this[name] !== null && !property.checkType(this[name])) {
             throw new Error('Unable to validate "' + name + '" type as "' + property.type + '"');
           }
           if (!property.checkContents(this[name])) {
