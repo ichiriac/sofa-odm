@@ -1,11 +1,28 @@
-<aside id="doc">
-  <h2>Navigation</h2>
-  <ul>
-    <li>
-      <a href="/sofa-odm/doc/">Quick Start </a>
-    </li>
-    <li>
-      <a href="/sofa-odm/doc/request">Requesting data</a>
-    </li>
-  </ul>
-</aside>
+
+  <div class='content-root'>
+    <div class='menubar'>
+      <div class="section">
+        <a class="big button" href="https://github.com/ichiriac/sofa-odm/zipball/master" target="_blank">Download</a>
+        <a class="big button" href="/sofa-odm/api/">View API</a>
+      </div>
+      <div class="section">
+        <h2>Navigation</h2>
+        <ul>
+          <li>
+            <a href="/sofa-odm/docs/">Quick Start </a>
+          </li>
+          <li>
+            <a href="/sofa-odm/docs/request">Requesting data</a>
+          </li>
+        </ul>
+      </div>
+      <div class='menu section' role='flatdoc-menu'></div>
+    </div>
+    <div role='flatdoc-content' class='content'></div>
+  </div>
+  <!-- Initializer -->
+  <script>
+    Flatdoc.run({
+      fetcher: Flatdoc.github('ichiriac/sofa-odm', '{{ include.page }}')
+    });
+  </script>
