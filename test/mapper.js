@@ -3,10 +3,10 @@ var assert = require('assert');
 describe('test mapper api', function() {
   var couchbase;
   it('should declare', function(done) {
-    require('../main')().then(function(api) {
+    require('./connector')().then(function(api) {
       couchbase = api;
       var test = couchbase.declare('test', {
-        fields: {
+        properties: {
           foo: {
             type: 'string',
             required: true,
@@ -21,11 +21,12 @@ describe('test mapper api', function() {
       assert(test.create instanceof Function);
       assert(test.find instanceof Function);
       assert(test.setup instanceof Function);
-      assert(test.options.fields.foo.validate.type instanceof Function);
-      assert(test.options.fields.foo.validate.contents instanceof Function);
+      assert(test.options.properties.foo.checkType instanceof Function);
+      assert(test.options.properties.foo.checkContents instanceof Function);
       assert(test.options.type === 'test');
       // setup the couchbase server
-      test.setup().then(function() {
+      test.setup().then(function(views) {
+        assert(views != false, "Should have views");
         done();
       }).done();
     }).done();
@@ -51,7 +52,7 @@ describe('test mapper api', function() {
   
   it('should create multi-indexes', function(done) {
     var multi = couchbase.declare('multi', {
-      fields: {
+      properties: {
         foo: 'string',
         bar: {
           type: 'string',

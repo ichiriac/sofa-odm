@@ -6,7 +6,7 @@ describe('test resultset api', function() {
 
   var couchbase;
   it('should connect', function(done) {
-    require('../main')().then(function(api) {
+    require('./connector')().then(function(api) {
       couchbase = api;
       done();
     }).done();
@@ -16,7 +16,7 @@ describe('test resultset api', function() {
   it('should declare', function(done) {
     finder = couchbase.declare('test-finder', {
       autoincrement: false,
-      fields: {
+      properties: {
         value: {
           type: 'number',
           required: true,

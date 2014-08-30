@@ -5,7 +5,7 @@ var q = require('q');
 describe('test record api', function() {
   var couchbase;
   it('should connect', function(done) {
-    require('../main')().then(function(api) {
+    require('./connector')().then(function(api) {
       couchbase = api;
       done();
     }).done();
@@ -15,7 +15,7 @@ describe('test record api', function() {
   it('should declare', function(done) {
     mapper = couchbase.declare('test-record', {
       autoincrement: false,
-      fields: {
+      properties: {
         foo: {
           type: 'number',
           required: true,
