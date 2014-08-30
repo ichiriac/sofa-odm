@@ -36,9 +36,9 @@ describe('test resultset api', function() {
   it('should cleanup previous entries', function(done) {
     finder.find('value', { startkey: 0, endkey: 50, limit: 1000}).then(function(result) {
       var records = [];
-      for(var i = 0; i < result.rows.length; i++) {
-        records.push(result.rows[i].remove());
-      }
+      result.each(function(item) {
+        records.push(item.remove(true));
+      });
       q.all(records).then(function() {
         done();
       }).done();
@@ -48,7 +48,7 @@ describe('test resultset api', function() {
   it('should create entries', function(done) {
     var records = [];
     for(var i = 1; i < 50; i++) {
-      records.push(finder.create({ value: i }).save());
+      records.push(finder.create({ value: i }).save(true));
     }
     q.all(records).then(function() {
       done();

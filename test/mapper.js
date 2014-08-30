@@ -38,14 +38,14 @@ describe('test mapper api', function() {
     assert(entry.foo === 'oof');
     assert(entry.bar === 123);
     assert(entry._id === false);
-    entry.save().then(function() {
+    entry.save(true).then(function() {
       assert(entry._id !== false, 'should have an ID');
       done();
     }).done();
   });
   it('should find some data', function(done) {
     couchbase.get('test').find('foo', 'oof').then(function(results) {
-      assert(results.length > 0);
+      assert(results.length > 0, 'The resultset should have record');
       done();
     }).done();
   });
