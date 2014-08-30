@@ -66,15 +66,12 @@ describe('test mapper api', function() {
       views: {
         idx1: {
           type: 'index',
-          fields: ['foo', 'bar']
+          properties: ['foo', 'bar']
         },
-        idx2: {
-          type: 'index',
-          fields: ['foo', 'baz']
-        },
+        idx2: ['foo', 'baz'],
         idx3: {
           type: 'unique',
-          fields: ['foo', 'bar']
+          properties: ['foo', 'bar']
         },
         /**
          * No need to check the doc type, done automatically
