@@ -20,6 +20,7 @@ npm install sofa-odm --save
 ## Functionnalities :
 
 * CRUD operations
+* Getters & Setters on records properties
 * Validating data before saving it
 * Filtering and paginations
 * Setup views and helpers for filtering (support also customized views)
