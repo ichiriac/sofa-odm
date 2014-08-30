@@ -22,7 +22,7 @@ describe('test behaviours', function() {
         views: {
           fooBar: {
             type: 'unique',
-            properties: ['foo', 'bar']
+            properties: ['baz', 'bar']
           }
         }
       });
@@ -50,23 +50,44 @@ describe('test behaviours', function() {
       done();
     }).done();
   });
-  
-  it('should raise errors', function(done) {
-    // test the required property
+
+  // test the required property
+  it('should raise required error', function(done) {
     var req = mapper.create({});
-    try {
-      req.save().then(function() {
-        assert(false, 'Should not be saved (required property)');
-      }, function() {
-        assert(true);
-        done();
-      }).done();
-    } catch(e) {
+    req.save().then(function() {
+      assert(false, 'Should not be saved (required property)');
+    }, function() {
       assert(true);
       done();
-    }
-    // test the unique property
-    
+    }).done();
+  });
+
+  // test the index property
+  it('should use index property', function(done) {
+    mapper.baz(123).then(function(result) {
+      assert(result.length > 0, 'Should find a result');
+      done();
+    }).done();
+  });
+
+  // test the index property
+  it('should raise an unique error', function(done) {
+    var fooUnique = mapper.create({
+      foo: 'hello', bar: 'john', baz: 007
+    });
+    var multiUnique = mapper.create({
+      foo: 'superman', bar: 'world', baz: 123
+    });
+    // test errors
+    fooUnique.save().then(function() {
+      assert(false, 'Should fail, unique constraint');
+    }, function() {
+      multiUnique.save().then(function() {
+        assert(false, 'Should fail, unique constraint');
+      }, function() {
+        done();
+      }).done();
+    }).done();
   });
 
 });
