@@ -1,27 +1,19 @@
----
-layout: default
-title: Documentation
----
-
-{% include doc.html %}
-
 # Quick Start Guide
 
-## Install :
+## Install
 
 This package is available on NPM, so you can easily add it to you NodeJS project :
 
-{% highlight sh %}
+```
 npm install sofa-odm --save
-{% endhighlight %}
+```
 
 ## Bootstrap
 
 To bootstrap Sofa, you need to create a session (that handles records) and to
 connect to bootstrap.
 
-{% highlight js %}
-
+```
   var session = new require('sofa-odm')();
   session.connect({
     host: 'localhost:8091',
@@ -29,14 +21,13 @@ connect to bootstrap.
   }).then(function() {
     // ready to do some stuf here !
   }).done();
-
-{% endhighlight %}
+```
 
 ## Your first model
 
 To keep things clean, define a mapper into a new file (user.js) :
 
-{% highlight js %}
+```
 module.exports = function(session) {
   return session.declare('users', {
     properties: {
@@ -48,11 +39,11 @@ module.exports = function(session) {
     }
   });
 };
-{% endhighlight %}
+```
 
 And once you when you will be connected, declare your mapper :
 
-{% highlight js %}
+```
 
   var session = new require('sofa-odm')();
   session.connect({
@@ -62,14 +53,14 @@ And once you when you will be connected, declare your mapper :
     require('./model/user')(session);
   }).done();
 
-{% endhighlight %}
+```
 
 ## Your first CRUD actions
 
 We continue with the previous code, once connected, we will create, save 
 and delete an user :
 
-{% highlight js %}
+```
 
   var session = new require('sofa-odm')();
   session.connect({
@@ -89,4 +80,4 @@ and delete an user :
     }).done();
   }).done();
 
-{% endhighlight %}
+```

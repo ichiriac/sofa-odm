@@ -1,17 +1,10 @@
----
-layout: default
-title: Requesting data from CouchBase
----
-
-{% include doc.html %}
-
 # Define requests
 
 To explore some functionnalities, we will take the blog example.
 
 First you must define de posts :
 
-{% highlight js %}
+```
   var posts = session.declare('post', {
     properties: {
       title: 'string',
@@ -26,14 +19,14 @@ First you must define de posts :
       getOnlineByAuthor: ['author', 'online']
     }
   });
-{% endhighlight %}
+```
 
 As you can see, a post have an author and an online status, 
 and we choose to create a view to retrieve authors posts depending their status.
 
 We define now the user :
 
-{% highlight js %}
+```
 
   var users = session.declare('user', {
     properties: {
@@ -58,11 +51,11 @@ We define now the user :
     }
   });
 
-{% endhighlight %}
+```
 
 So we start to write some data, and then retrieve it :
 
-{% highlight js %}
+```
 
   var john = users.create({
     name: 'John Doe',
@@ -84,4 +77,4 @@ So we start to write some data, and then retrieve it :
     });
   }).done();
 
-{% endhighlight %}
+```
