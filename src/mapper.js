@@ -25,6 +25,11 @@ module.exports = function(manager) {
       }
       , options
     );
+    // defines the factories
+    this.factory = {
+      property:     manager.factory.property(manager, this),
+      resultset:    manager.factory.resultset(manager, this)
+    };
     // initialize fields properties
     for(var name in this.options.properties) {
       this.options.properties[name] = new this.factory.property(
@@ -68,12 +73,8 @@ module.exports = function(manager) {
         })(name);
       }
     }
-    // register factories
-    this.factory = {
-      property:     manager.factory.property(manager, this),
-      record:       manager.factory.record(manager, this, options.record || {}),
-      resultset:    manager.factory.resultset(manager, this)
-    };
+    // register record factory
+    this.factory.record = manager.factory.record(manager, this, options.record || {});
     // chain events to manager
     this.on('error', function(err) { manager.emit('error', err); });
     this.on('save', function(record) { manager.emit('save', record); });
