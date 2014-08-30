@@ -22,18 +22,12 @@ module.exports = function(manager) {
         autoincrement:  true,
         properties:     {},
         views:          {},
-        // register factories
-        factory: {
-          property:     manager.options.factory.property(manager, this),
-          record:       manager.options.factory.record(manager, this, options.record || {}),
-          resultset:    manager.options.factory.resultset(manager, this)
-        }
       }
       , options
     );
     // initialize fields properties
     for(var name in this.options.properties) {
-      this.options.properties[name] = new this.options.factory.property(
+      this.options.properties[name] = new this.factory.property(
         this.options.properties[name], name
       );
       // behaviour decorator
@@ -74,6 +68,12 @@ module.exports = function(manager) {
         })(name);
       }
     }
+    // register factories
+    this.factory = {
+      property:     manager.factory.property(manager, this),
+      record:       manager.factory.record(manager, this, options.record || {}),
+      resultset:    manager.factory.resultset(manager, this)
+    };
     // chain events to manager
     this.on('error', function(err) { manager.emit('error', err); });
     this.on('save', function(record) { manager.emit('save', record); });
@@ -120,7 +120,7 @@ module.exports = function(manager) {
         result.reject(err);
         self.emit('error', err);
       } else {
-        var resultset = new self.options.factory.resultset(
+        var resultset = new self.factory.resultset(
           data, {
             view: view,
             misc: misc,
@@ -137,7 +137,7 @@ module.exports = function(manager) {
    * Creates a new record
    */
   mapper.prototype.create = function(doc) {
-    return new this.options.factory.record(doc);
+    return new this.factory.record(doc);
   };
   /**
    * Retrieves the next sequence id

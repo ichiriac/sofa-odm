@@ -24,13 +24,6 @@ var manager = function(options) {
           'boolean': 'boolean', 
           'array': 'array'
         },
-        // factories
-        factory: {
-          mapper:     require(__dirname + '/src/mapper')(this),
-          record:     require(__dirname + '/src/record'),
-          resultset:  require(__dirname + '/src/resultset'),
-          property:   require(__dirname + '/src/property')
-        }
       }, options || {}
   );
   // registers behaviours
@@ -63,6 +56,14 @@ var manager = function(options) {
   if (this.options.hasOwnProperty('couchbase')) {
     this.connect(this.options.couchbase).done();
   }
+  // factories
+  this.factory = {
+    mapper:     require(__dirname + '/src/mapper')(this),
+    record:     require(__dirname + '/src/record'),
+    resultset:  require(__dirname + '/src/resultset'),
+    property:   require(__dirname + '/src/property'),
+    property:   require(__dirname + '/src/property')
+  };
   // declare registered mappers
   this.mappers = {};
   if(this.options.hasOwnProperty('mappers')) {
@@ -104,7 +105,7 @@ manager.prototype.declare = function(namespace, options) {
       'Namespace [' + namespace + '] is already defined !'
     );
   }
-  return new this.options.factory.mapper(namespace, options);
+  return new this.factory.mapper(namespace, options);
 };
 
 /**
