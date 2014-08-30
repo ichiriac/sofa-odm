@@ -76,4 +76,5 @@ So we start to write some data, and then retrieve it :
       console.log('Found ' + post.title + ' : ' + post.body);
     });
   }).done();
+
 {% endhighlight %}

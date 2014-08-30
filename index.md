@@ -81,13 +81,3 @@ session.connect({
   ;
 }).done();
 {% endhighlight %}
-
-
-## Documentation
-
-The documentation can be found at this address : http://ichiriac.github.io/sofa-odm/doc
-(work still in progress)
-
-#License
-
-This code is distribute under The MIT License (MIT), authored by Ioan CHIRIAC.
