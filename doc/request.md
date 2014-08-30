@@ -1,3 +1,10 @@
+---
+layout: default
+title: Requesting data from CouchBase
+---
+
+{% include doc.html %}
+
 # Define requests
 
 To explore some functionnalities, we will take the blog example.
