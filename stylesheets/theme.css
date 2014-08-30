@@ -84,3 +84,13 @@
     margin-top: 40px;
     font-size: 0.9em; }
 }
+
+
+.section h2 {
+  margin-top: 6px;
+  margin-bottom: 2px;
+  color: #9090aa;
+  font-family: montserrat, sans-serif;
+  font-size: 0.9em;
+  font-weight: bold;
+}
