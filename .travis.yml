@@ -9,7 +9,7 @@ before_install:
   - sudo dpkg -i couchbase-server-enterprise_x86_64_2.0.0.deb
   - sudo service couchbase-server start
   # Setup Bucket for test
-  - /opt/couchbase/bin/couchbase-cli cluster-init -c 127.0.0.1:8091 --cluster-init-username=Administrator --cluster-init-password=password --cluster-init-ramsize=256
+  - /opt/couchbase/bin/couchbase-cli cluster-init -c 127.0.0.1:8091 --cluster-init-ramsize=256
   - /opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=tests --bucket-type=couchbase --bucket-ramsize=100 --bucket-replica=0 --wait
 
 language: node_js
