@@ -25,28 +25,28 @@ var manager = function(options) {
           'array': 'array'
         },
         // factories
-        , factory: {
+        factory: {
           mapper:     require(__dirname + '/src/mapper')(this),
           record:     require(__dirname + '/src/record'),
           resultset:  require(__dirname + '/src/resultset'),
           property:   require(__dirname + '/src/property')
         }
-      }, options
+      }, options || {}
   );
   // registers behaviours
   for(var i = 0; i < this.options.behaviours.length; i++) {
     var behaviour = this.options.behaviours[i];
-    if (behaviour instanceof String) {
+    if (typeof behaviour === 'string') {
       this.options.behaviours[i] = require(
         behaviour[0] == '.' || behaviour[0] == '/' ?
           behaviour : __dirname + '/src/behaviours/' + behaviour
-      )(this);
+      );
     }
   }
   // register validators
   for(var i in this.options.validators) {
     var validator = this.options.validators[i];
-    if (validator instanceof String) {
+    if (typeof validator === 'string') {
       this.options.validators[i] = require(
         validator[0] == '.' || validator[0] == '/' ?
           validator : __dirname + '/src/validators/' + validator
@@ -77,6 +77,9 @@ util.inherits(manager, EventEmitter);
  * Connects to couchbase
  */
 manager.prototype.connect = function(options) {
+  if (this.cb) {
+    this.cb.shutdown();
+  }
   var result = q.defer();
   var self = this;
   this.cb = new cb.Connection(options || {}, function(err) {
