@@ -18,7 +18,7 @@ aspects of Couchbase like views and requesting.
 
 ## Getting started
 
-```
+```sh
 npm install sofa-odm --save
 ```
 

@@ -4,7 +4,7 @@ To explore some functionnalities, we will take the blog example.
 
 First you must define de posts :
 
-```
+```js
   var posts = session.declare('post', {
     properties: {
       title: 'string',
@@ -26,8 +26,7 @@ and we choose to create a view to retrieve authors posts depending their status.
 
 We define now the user :
 
-```
-
+```js
   var users = session.declare('user', {
     properties: {
       name: 'string',
@@ -55,8 +54,7 @@ We define now the user :
 
 So we start to write some data, and then retrieve it :
 
-```
-
+```js
   var john = users.create({
     name: 'John Doe',
     email: 'john@doe.com'
