@@ -20,7 +20,7 @@ module.exports = function(manager, mapper) {
       }
     }
   };
-  util.inherits(mapper, EventEmitter);
+  util.inherits(record, EventEmitter);
 
   // Gets the record ID
   record.prototype.getId = function() {
@@ -42,7 +42,7 @@ module.exports = function(manager, mapper) {
         for(var name in mapper.options.properties) {
           var property = mapper.options.properties[name];
           if (this.hasOwnProperty(name) && !property.checkType(this[name])) {
-            throw new Error('Unable to validate "' + name + '" type');
+            throw new Error('Unable to validate "' + name + '" type as "' + property.type + '"');
           }
           if (!property.checkContents(this[name])) {
             throw new Error('Unable to validate "' + name + '" contents');
@@ -92,7 +92,7 @@ module.exports = function(manager, mapper) {
           mapper.emit('error', err);
         } else {
           // reset the current field ID
-          this._id = false;
+          self._id = false;
           result.resolve(self);
           self.emit('removed', self);
           mapper.emit('removed', self);
