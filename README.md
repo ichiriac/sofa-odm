@@ -15,6 +15,8 @@ aspects of Couchbase like views and requesting.
 *Current version: [v/0.1.3][dist]*
 
 [![Build Status](https://travis-ci.org/ichiriac/sofa-odm.svg)](https://travis-ci.org/ichiriac/sofa-odm)
+[![Dependency Status](https://david-dm.org/ichiriac/sofa-odm.svg)](https://david-dm.org/ichiriac/sofa-odm)
+[![Coverage Status](https://coveralls.io/repos/ichiriac/sofa-odm/badge.png?branch=master)](https://coveralls.io/r/ichiriac/sofa-odm?branch=master)
 
 ## Getting started
 
