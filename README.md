@@ -12,7 +12,7 @@ aspects of Couchbase like views and requesting.
  * Mappers definition are compliant with JSON Schema Definition
  * Using Promises API and EventEmitter
 
-*Current version: [v/0.1.3][dist]*
+*Current version: [v/0.1.4][dist]*
 
 [![Build Status](https://travis-ci.org/ichiriac/sofa-odm.svg)](https://travis-ci.org/ichiriac/sofa-odm)
 [![Dependency Status](https://david-dm.org/ichiriac/sofa-odm.svg)](https://david-dm.org/ichiriac/sofa-odm)

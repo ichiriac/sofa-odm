@@ -1,6 +1,6 @@
 {
   "name": "sofa-odm",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "NodeJS ODM for Couchbase",
   "main": "main.js",
   "directories": {
@@ -31,12 +31,12 @@
   "homepage": "http://ichiriac.github.io/sofa-odm",
   "dependencies": {
     "q": "^1.0.1",
-    "couchbase": "^1.2.4",
-    "extend": "^1.3.0",
+    "couchbase": "^2.0.1",
+    "extend": "^2.0.0",
     "node-uuid": "^1.4.1"
   },
   "devDependencies": {
-    "mocha": "^1.21.4",
+    "mocha": "^2.0.1",
     "istanbul": "^0.3.0",
     "jsdox": "^0.4.2",
     "coveralls": "~2.11.1",
