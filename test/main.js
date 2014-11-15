@@ -3,7 +3,7 @@ var assert = require('assert');
 describe('test main api', function() {
   var couchbase;
   it('should connect to couchbase', function(done) {
-    require('./connector')(false).then(function(api) {
+    require('./connector')().then(function(api) {
       assert(typeof api.declare === 'function', 'should have declare function');
       assert(typeof api.get === 'function', 'should have get function');
       assert(typeof api.has === 'function', 'should have has function');
@@ -45,13 +45,15 @@ describe('test main api', function() {
     });
     couchbase.disconnect().then(function() {
       return couchbase.connect({
-        bucket: 'unknown'
+        host: 'demo.123:8091'
+        , bucket: 'unknown'
+        , mock: false
       });
     }).then(function() {
       assert(false, 'should not be connected to "unknown" bucket !');
-    }, function() { 
+    }, function() {
       // ignore error from promise, use the event
-      assert(true); 
+      assert(true);
     }).done();
   });
 });

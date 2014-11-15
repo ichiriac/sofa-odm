@@ -42,8 +42,8 @@ module.exports = function(manager, mapper, body) {
   for(var name in mapper.options.properties) {
     var property = mapper.options.properties[name];
     if (
-      property.hasOwnProperty('get') 
-      || property.hasOwnProperty('set') 
+      property.hasOwnProperty('get')
+      || property.hasOwnProperty('set')
     ) {
       Object.defineProperty(record.prototype, name, {
           get: property.hasOwnProperty('get') ? property.get : function() {
@@ -61,8 +61,9 @@ module.exports = function(manager, mapper, body) {
 
   // Gets the record ID
   record.prototype.getId = function() {
-    return mapper.options.autoincrement ? 
+    return mapper.options.autoincrement ?
       mapper.options.type + '.' + this._id : this._id
+    ;
   };
 
   // saves the current record
@@ -89,21 +90,7 @@ module.exports = function(manager, mapper, body) {
         mapper.emit('save', this);
         // reserved field _type
         this._type = mapper.options.type;
-        manager.cb.set(
-          this.getId(), this, 
-          wait ? { persist_to: 1, replicate_to: 0, spooled: false } : {},
-          function(err, data) {
-            if (err) {
-              result.reject(err);
-              self.emit('error', err);
-              mapper.emit('error', err);
-            } else {
-              result.resolve(self);
-              self.emit('saved', self);
-              mapper.emit('saved', self);
-            }
-          }
-        );
+        manager.cb.set(mapper, this.getId(), this, wait, result);
       } catch(err) {
         result.reject(err);
         this.emit('error', err);
@@ -112,7 +99,7 @@ module.exports = function(manager, mapper, body) {
       return result.promise;
     }
   };
-  
+
   // removes the current entry
   record.prototype.remove = function(wait) {
     var result = q.defer();
@@ -123,22 +110,7 @@ module.exports = function(manager, mapper, body) {
       );
       this.emit('remove', this);
       mapper.emit('remove', this);
-      manager.cb.remove(this.getId(), 
-        wait ? { persist_to: 1, replicate_to: 0, spooled: false } : {},
-        function(err) {
-          if (err) {
-            result.reject(err);
-            self.emit('error', err);
-            mapper.emit('error', err);
-          } else {
-            // reset the current field ID
-            self._id = false;
-            result.resolve(self);
-            self.emit('removed', self);
-            mapper.emit('removed', self);
-          }
-        }
-      );
+      manager.cb.remove(this, mapper, this.getId(), wait, result);
     } catch(err) {
       result.reject(err);
       this.emit('error', err);
@@ -146,7 +118,7 @@ module.exports = function(manager, mapper, body) {
     }
     return result.promise;
   };
-  
+
   // extends with custom functions
   for(var name in body) {
     if (body[name] instanceof Function) {
@@ -162,7 +134,7 @@ module.exports = function(manager, mapper, body) {
       record.prototype[name] = body[name];
     }
   }
-  
+
   // expose the record class
   return record;
 };

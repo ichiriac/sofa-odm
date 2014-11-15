@@ -21,7 +21,7 @@ module.exports = function(manager) {
       }
       // handle map function
       if (!view.hasOwnProperty('map')) {
-        view.map = 
+        view.map =
           'function(doc, meta) {\n'
           + '\tif(doc._type && doc._type === ' + JSON.stringify(mapper.options.type) + ') {\n\t\t'
         ;
@@ -80,24 +80,24 @@ module.exports = function(manager) {
     var args = [];
     for(var i = 0; i < columns.length; i++) {
       var name = columns[i];
-      args.push( 
-        record.hasOwnProperty(name) ? 
-          mapper.options.properties[name].unserialize(record[name]) : null 
+      args.push(
+        record.hasOwnProperty(name) ?
+          mapper.options.properties[name].unserialize(record[name]) : null
       );
     }
     mapper[view]({
       key: args,
       limit: 1
     }).then(function(items) {
-      if ( 
+      if (
         !items.rows[0] ||
         items.rows[0].getId() == record.getId()
       ) {
         result.resolve(true);
       } else {
         result.reject(new Error(
-          'Unique ' + view + ' constraint failed with [' 
-          + columns.join(', ') + '], document "' 
+          'Unique ' + view + ' constraint failed with ['
+          + columns.join(', ') + '], document "'
           + items.rows[0].getId() + '" conflicts'
         ));
       }
@@ -111,38 +111,9 @@ module.exports = function(manager) {
    * Setup the views
    */
   view.prototype.setup = function() {
-    var result = q.defer();
-    var docs = { views: {} };
-    var found = false;
-    var self = this;
-    for(var name in this.views) {
-      var view = this.views[name];
-      if (
-        view.hasOwnProperty('map') || 
-        view.hasOwnProperty('reduce')
-      ) {
-        found = true;
-        docs.views[name] = {};
-        if (view.hasOwnProperty('map')) {
-          docs.views[name].map = view.map;
-        }
-        if (view.hasOwnProperty('reduce')) {
-          docs.views[name].reduce = view.reduce;
-        }
-      }
-    }
-    if (found) {
-      manager.cb.setDesignDoc(this.mapper.options.type, docs, function(err) {
-        if (err) {
-          result.reject(err);
-          self.mapper.emit('error', err);
-        } else {
-          result.resolve(docs);
-          self.mapper.emit('setup', docs);
-        }
-      });
-    } else result.resolve(false);
-    return result.promise;
+    return manager.cb.setup(
+      this, q.defer()
+    ).promise;
   };
 
   return view;

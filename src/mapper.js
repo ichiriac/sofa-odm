@@ -65,8 +65,6 @@ module.exports = function(manager) {
    * Finds data from the specified resultset
    */
   mapper.prototype.find = function(view, criteria) {
-    var result = q.defer();
-    var self = this;
     // handling criteria parameters
     if (criteria instanceof Array) {
       if (criteria.length > 1) {
@@ -90,23 +88,7 @@ module.exports = function(manager) {
       skip: 0               // pagination
     }, criteria);
     // request :
-    manager.cb.view(this.options.type, view, criteria).query(function(err, data, misc) {
-      if (err) {
-        result.reject(err);
-        self.emit('error', err);
-      } else {
-        var resultset = new self.factory.resultset(
-          data, {
-            view: view,
-            misc: misc,
-            criteria: criteria
-          }
-        );
-        result.resolve(resultset);
-        self.emit('find', resultset);
-      }
-    });
-    return result.promise;
+    return manager.cb.request(this, view, criteria, q.defer()).promise;
   };
   /**
    * Creates a new record
@@ -121,19 +103,7 @@ module.exports = function(manager) {
     var result = q.defer();
     var self = this;
     if (this.options.autoincrement == true) {
-      manager.cb.incr(
-        'seq.' + this.options.type, 
-        {initial: 1, offset: 1},
-        function(err, data) {
-          if (err) {
-            result.reject(err);
-            self.emit('error', err);
-          } else {
-            result.resolve(data.value);
-            self.emit('next', data.value);
-          }
-        }
-      );
+      manager.cb.incr(this, 'seq.' + this.options.type, result);
     } else {
       var id = uuid.v4();
       result.resolve(id);

@@ -1,4 +1,3 @@
-var cb = require('couchbase');
 var q = require('q');
 var extend = require('extend');
 var util = require('util');
@@ -19,9 +18,9 @@ var manager = function(options) {
         validators: {
           'string': 'string',
           'number': 'number',
-          'object': 'object', 
-          'date': 'date', 
-          'boolean': 'boolean', 
+          'object': 'object',
+          'date': 'date',
+          'boolean': 'boolean',
           'array': 'array'
         },
       }, options || {}
@@ -52,6 +51,9 @@ var manager = function(options) {
       this.on(event, this.options.on[event]);
     }
   }
+  this.on('disconnect', function(manager) {
+    manager.cb = null;
+  });
   // connects to couchbase
   if (this.options.hasOwnProperty('couchbase')) {
     this.connect(this.options.couchbase).done();
@@ -78,31 +80,15 @@ util.inherits(manager, EventEmitter);
 /**
  * Connects to couchbase
  */
-manager.prototype.connect = function(options) {
+manager.prototype.connect = function(driver, options) {
   var result = q.defer();
-  var self = this;
-  if (!this.cb) {
-    var builder = cb.Connection;
-    if (options.mock) {
-      builder = cb.Mock.Connection;
-    }
-    this.cb = new builder(options || {}, function(err) {
-      if (err) {
-        result.reject(err);
-        self.emit('error', err);
-        self.cb = null;
-      } else {
-        result.resolve(self);
-        self.emit('connect', self);
-      }
-    });
-    if (options.mock) {
-      result.resolve(this);
-      self.emit('connect', this);
-    }
-  } else {
-    result.resolve(self);
+  if (!options) {
+      options = driver;
+      driver = 'couchbase';
   }
+  if (this.cb) this.disconnect();
+  this.cb = require('./src/drivers/' + driver)(this);
+  this.cb.connect(options, result);
   return result.promise;
 };
 
@@ -112,11 +98,10 @@ manager.prototype.connect = function(options) {
 manager.prototype.disconnect = function() {
   var result = q.defer();
   if (this.cb) {
-    this.cb.shutdown();
-    this.cb = null;
-    this.emit('disconnect', this);
+    this.cb.shutdown(result);
+  } else {
+    result.resolve(this);
   }
-  result.resolve(this);
   return result.promise;
 };
 
