@@ -1,7 +1,7 @@
 {
   "name": "sofa-odm",
-  "version": "0.1.4",
-  "description": "NodeJS ODM for Couchbase",
+  "version": "0.1.6",
+  "description": "NodeJS ODM for NoSQL, Couchbase, Redis",
   "main": "main.js",
   "directories": {
     "test": "test"
@@ -16,6 +16,7 @@
   },
   "keywords": [
     "couchbase",
+    "redis",
     "odm",
     "crud",
     "unique",
@@ -31,7 +32,7 @@
   "homepage": "http://ichiriac.github.io/sofa-odm",
   "dependencies": {
     "q": "^1.0.1",
-    "couchbase": "^2.0.1",
+    "couchbase": "^1.2.4",
     "extend": "^2.0.0",
     "node-uuid": "^1.4.1"
   },
