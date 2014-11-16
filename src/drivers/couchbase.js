@@ -11,17 +11,18 @@ module.exports = function(manager) {
     /** Connects **/
     connect: function(options, result) {
       if (this.cb) this.shutdown();
+      var cnx = {
+        host: options.host,
+        bucket: options.bucket ? options.bucket : options.database
+      };
       var builder = cb.Connection;
       var self = this;
       this.mock = false;
-      if (options.hasOwnProperty('mock')) {
-        if (options.mock) {
-          builder = cb.Mock.Connection;
-          this.mock = true;
-        }
-        delete options.mock;
+      if (options.params.mock) {
+        builder = cb.Mock.Connection;
+        this.mock = true;
       }
-      this.cb = new builder(options || {}, function(err) {
+      this.cb = new builder(cnx, function(err) {
         if (err) {
           result.reject(err);
           manager.emit('error', err);

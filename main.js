@@ -1,6 +1,7 @@
 var q = require('q');
 var extend = require('extend');
 var util = require('util');
+var url = require('url');
 var EventEmitter = require('events').EventEmitter;
 
 /**
@@ -85,6 +86,17 @@ manager.prototype.connect = function(driver, options) {
   if (!options) {
       options = driver;
       driver = 'couchbase';
+  }
+  if (typeof options === 'string') {
+    var meta = url.parse(options, true, true);
+    options = {
+      host: meta.host,
+      database: meta.pathname,
+      params: meta.query
+    };
+    if (meta.protocol) {
+      driver = meta.protocol.substring(0, meta.protocol.length - 1);
+    }
   }
   if (this.cb) this.disconnect();
   this.cb = require('./src/drivers/' + driver)(this);

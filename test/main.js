@@ -47,7 +47,9 @@ describe('test main api', function() {
       return couchbase.connect({
         host: 'demo.123:8091'
         , bucket: 'unknown'
-        , mock: false
+        , params : {
+            mock: false
+        }
       });
     }).then(function() {
       assert(false, 'should not be connected to "unknown" bucket !');
