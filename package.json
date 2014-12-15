@@ -1,14 +1,10 @@
 {
   "name": "sofa-odm",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "NodeJS ODM for NoSQL, Couchbase, Redis",
   "main": "main.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "test": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec -t 10000 && cat ./coverage/lcov.info | node ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "doc": "node ./node_modules/jsdox/bin/jsdox --output doc/api main.js src && node ./node_modules/jsdox/bin/jsdox --output doc/api/behaviours src/behaviours && node ./node_modules/jsdox/bin/jsdox --output doc/api/validators src/validators"
+    "test": "node ./node_modules/nodm/test.js"
   },
   "repository": {
     "type": "git",
@@ -16,13 +12,8 @@
   },
   "keywords": [
     "couchbase",
-    "redis",
     "odm",
-    "crud",
-    "unique",
-    "index",
-    "view",
-    "validators"
+    "crud"
   ],
   "author": "Ioan CHIRIAC",
   "license": "MIT",
@@ -31,16 +22,7 @@
   },
   "homepage": "http://ichiriac.github.io/sofa-odm",
   "dependencies": {
-    "q": "^1.0.1",
-    "couchbase": "^1.2.4",
-    "extend": "^2.0.0",
-    "node-uuid": "^1.4.1"
-  },
-  "devDependencies": {
-    "mocha": "^2.0.1",
-    "istanbul": "^0.3.0",
-    "jsdox": "^0.4.2",
-    "coveralls": "~2.11.1",
-    "mocha-lcov-reporter": "0.0.1"
+    "couchbase": "1.2.4",
+    "nodm": "^0.1.6"
   }
 }

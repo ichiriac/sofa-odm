@@ -1,18 +1,8 @@
 # Sofa the Couchbase ODM
 
-Sofa ODM is a tiny & simplistic ODM for Couchbase that will help you to build
-a business model layer with ease, and without having to deal with technicals
-aspects of Couchbase like views and requesting.
+This project is a driver for the [NodeJS NoSQL ODM](https://github.com/ichiriac/node-nosql-odm/), visit this repository for further informations.
 
- * CRUD operations
- * Getters & Setters on records properties
- * Validating data before saving it
- * Filtering and paginations
- * Setup views and helpers for filtering (support also customized views)
- * Mappers definition are compliant with JSON Schema Definition
- * Using Promises API and EventEmitter
-
-*Current version: [v/0.1.6][dist]*
+*Current version: [v/0.1.7][dist]*
 
 [![Build Status](https://travis-ci.org/ichiriac/sofa-odm.svg)](https://travis-ci.org/ichiriac/sofa-odm)
 [![Dependency Status](https://david-dm.org/ichiriac/sofa-odm.svg)](https://david-dm.org/ichiriac/sofa-odm)

@@ -1,4 +1,3 @@
-var q = require('q');
 var cb = require('couchbase');
 
 /**
