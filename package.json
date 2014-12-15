@@ -1,6 +1,6 @@
 {
   "name": "sofa-odm",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "NodeJS ODM for NoSQL, Couchbase, Redis",
   "main": "main.js",
   "scripts": {
@@ -23,6 +23,6 @@
   "homepage": "http://ichiriac.github.io/sofa-odm",
   "dependencies": {
     "couchbase": "1.2.4",
-    "nodm": "^0.1.6"
+    "nodm": "^0.1.10"
   }
 }
