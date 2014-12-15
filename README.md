@@ -2,7 +2,7 @@
 
 This project is a driver for the [NodeJS NoSQL ODM](https://github.com/ichiriac/node-nosql-odm/), visit this repository for further informations.
 
-*Current version: [v/0.1.7][dist]*
+*Current version: [v/0.1.8][dist]*
 
 [![Build Status](https://travis-ci.org/ichiriac/sofa-odm.svg)](https://travis-ci.org/ichiriac/sofa-odm)
 [![Dependency Status](https://david-dm.org/ichiriac/sofa-odm.svg)](https://david-dm.org/ichiriac/sofa-odm)
